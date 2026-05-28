@@ -2,6 +2,14 @@ import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 
 import "./globals.css";
+import "../styles/theme.css";
+import "../styles/navbar.css";
+import "../styles/hero.css";
+import "../styles/services.css";
+import "../styles/gallery.css";
+import "../styles/contact.css";
+import "../styles/whatsapp-sticky.css";
+import "../styles/footer.css";
 
 const inter = Inter({
   subsets: ["latin"],

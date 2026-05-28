@@ -28,14 +28,14 @@
   z-index: 1;
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-xl);
-  margin-bottom: var(--space-xl);
+  gap: var(--space-2xl);
+  margin-bottom: var(--space-2xl);
 }
 
 @media (min-width: 768px) {
   .footer__inner {
     grid-template-columns: 2fr 1fr 1fr;
-    gap: var(--space-2xl);
+    gap: var(--space-3xl);
   }
 }
 
@@ -43,14 +43,14 @@
 .footer__brand {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
-  max-width: 360px;
+  gap: var(--space-md);
+  max-width: 380px;
 }
 
 .footer__logo {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: var(--space-sm);
   align-self: start;
 }
 
@@ -62,15 +62,15 @@
 
 .footer__logo-text {
   font-family: var(--font-display);
-  font-size: var(--text-base);
-  font-weight: 700;
+  font-size: var(--text-lg);
+  font-weight: 800;
   letter-spacing: 0.04em;
   color: var(--text-primary);
 }
 
 .footer__tagline {
   font-size: var(--text-sm);
-  line-height: 1.6;
+  line-height: 1.7;
   color: var(--text-secondary);
   margin: 0;
 }
@@ -89,6 +89,7 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-primary);
+  opacity: 0.9;
 }
 
 .footer__links {
@@ -100,9 +101,10 @@
 
 .footer__link {
   font-size: var(--text-sm);
-  color: var(--text-muted);
+  color: var(--text-secondary);
   transition: color var(--transition-fast);
   cursor: pointer;
+  line-height: 1.6;
 }
 
 .footer__link:hover {
@@ -111,7 +113,8 @@
 
 .footer__info {
   font-size: var(--text-sm);
-  color: var(--text-muted);
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
 
 /* Bottom Bar */
@@ -120,8 +123,8 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
-  padding-top: var(--space-md);
+  gap: var(--space-lg);
+  padding-top: var(--space-xl);
   border-top: 1px solid var(--border-primary);
   color: var(--text-muted);
   font-size: var(--text-xs);
@@ -132,6 +135,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    gap: var(--space-xl);
   }
 }
 
@@ -145,5 +149,5 @@
   letter-spacing: 0.08em;
   font-size: 0.6rem;
   color: var(--text-muted);
-  opacity: 0.8;
+  opacity: 0.7;
 }

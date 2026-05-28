@@ -1,12 +1,4 @@
 @import "tailwindcss";
-@import "../styles/theme.css";
-@import "../styles/navbar.css";
-@import "../styles/hero.css";
-@import "../styles/services.css";
-@import "../styles/gallery.css";
-@import "../styles/contact.css";
-@import "../styles/whatsapp-sticky.css";
-@import "../styles/footer.css";
 
 * {
   margin: 0;
@@ -40,15 +32,8 @@ body::before {
   pointer-events: none;
 
   background-image:
-    linear-gradient(
-      rgba(255, 255, 255, 0.015) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.015) 1px,
-      transparent 1px
-    );
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
 
   background-size: 80px 80px;
 
@@ -65,12 +50,11 @@ body::after {
 
   pointer-events: none;
 
-  background:
-    radial-gradient(
-      circle at top,
-      rgba(163, 255, 60, 0.06),
-      transparent 35%
-    );
+  background: radial-gradient(
+    circle at top,
+    rgba(163, 255, 60, 0.06),
+    transparent 35%
+  );
 
   z-index: -1;
 }
@@ -119,7 +103,7 @@ a {
 }
 
 .section-spacing {
-  padding-block: clamp(5rem, 10vw, 8rem);
+  padding-block: clamp(4rem, 8vw, 6.5rem);
 }
 
 /* =========================================================
@@ -131,9 +115,9 @@ a {
   flex-direction: column;
   align-items: flex-start;
 
-  gap: var(--space-lg);
+  gap: var(--space-md);
 
-  margin-bottom: clamp(3rem, 6vw, 5rem);
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
 
   position: relative;
   z-index: 1;
@@ -191,13 +175,7 @@ a {
 .section-heading-accent {
   display: inline-block;
 
-  background:
-    linear-gradient(
-      135deg,
-      #ffffff 0%,
-      #d8f8a0 55%,
-      #a3ff3c 100%
-    );
+  background: linear-gradient(135deg, #ffffff 0%, #d8f8a0 55%, #a3ff3c 100%);
 
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -208,11 +186,12 @@ a {
 .section-description {
   font-size: clamp(var(--text-sm), 1.8vw, var(--text-base));
 
-  line-height: 1.75;
+  line-height: 1.8;
 
   color: var(--text-secondary);
 
   max-width: 540px;
+  letter-spacing: 0.01em;
 }
 
 .glass-card {
@@ -232,12 +211,7 @@ a {
 }
 
 .gradient-text {
-  background:
-    linear-gradient(
-      135deg,
-      #ffffff 0%,
-      #a3ff3c 100%
-    );
+  background: linear-gradient(135deg, #ffffff 0%, #a3ff3c 100%);
 
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

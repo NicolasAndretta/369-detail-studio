@@ -22,6 +22,8 @@
     );
 }
 
+
+
 /* ── Grid ── */
 
 .gallery__grid {
@@ -53,7 +55,7 @@
   overflow: hidden;
   border: 1px solid var(--border-primary);
   background: var(--background-secondary);
-  cursor: default;
+  cursor: pointer;
   isolation: isolate;
 
   /* Default height on mobile */
@@ -113,26 +115,51 @@
   transition: background var(--transition-slow);
 }
 
-/* Matte unconditioned paint with circular scratch holograms (SVG rendered on top) */
 .gallery-card__placeholder--before {
-  background: 
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='30' fill='none' stroke='rgba(255,255,255,0.14)' stroke-width='0.35' stroke-dasharray='10 15 30 10'/%3E%3Ccircle cx='45' cy='55' r='25' fill='none' stroke='rgba(255,255,255,0.11)' stroke-width='0.35' stroke-dasharray='5 20 15 15'/%3E%3Ccircle cx='60' cy='40' r='35' fill='none' stroke='rgba(255,255,255,0.08)' stroke-width='0.35' stroke-dasharray='25 10 5 30'/%3E%3Ccircle cx='30' cy='30' r='20' fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='0.35' stroke-dasharray='12 18 6 24'/%3E%3Ccircle cx='70' cy='70' r='22' fill='none' stroke='rgba(255,255,255,0.08)' stroke-width='0.35' stroke-dasharray='8 22 14 10'/%3E%3C/svg%3E") repeat,
-    radial-gradient(circle at center, #1b1b1b 0%, #111111 50%, #070707 100%);
-  background-size: 130px 130px, cover;
-  filter: saturate(0.85);
+  background: linear-gradient(
+    135deg,
+    rgba(8, 8, 8, 0.95) 0%,
+    rgba(15, 15, 15, 0.85) 50%,
+    rgba(12, 12, 12, 0.92) 100%
+  );
+  position: relative;
 }
 
-/* Gloss black paint with specular highlight spot & glowing lime reflections */
+.gallery-card__placeholder--before::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse at 35% 25%,
+      rgba(255, 255, 255, 0.04) 0%,
+      transparent 50%
+    );
+  z-index: 0;
+}
+
 .gallery-card__placeholder--after {
-  background: 
-    linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 40%, rgba(163, 255, 60, 0.04) 100%),
-    radial-gradient(circle at 45% 35%, rgba(255, 255, 255, 0.14) 0%, rgba(10, 10, 10, 0.8) 45%, #050505 100%),
-    radial-gradient(circle at 75% 25%, rgba(163, 255, 60, 0.08) 0%, transparent 60%);
-  border: 1px solid rgba(163, 255, 60, 0.22);
-  box-shadow: 
-    inset 0 0 35px rgba(163, 255, 60, 0.04),
-    inset 0 0 1px 1px rgba(255, 255, 255, 0.06), /* Specular inner edge reflection */
-    0 8px 32px rgba(0, 0, 0, 0.45);
+  background: linear-gradient(
+    135deg,
+    rgba(20, 20, 20, 0.98) 0%,
+    rgba(10, 10, 10, 0.95) 50%,
+    rgba(5, 5, 5, 0.98) 100%
+  );
+  position: relative;
+  overflow: hidden;
+}
+
+.gallery-card__placeholder--after::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(163, 255, 60, 0.08) 0%,
+      transparent 65%
+    );
+  z-index: 0;
 }
 
 /* Subtle grid pattern inside placeholder */
@@ -141,16 +168,17 @@
   inset: 0;
   background-image:
     linear-gradient(
-      rgba(255, 255, 255, 0.02) 1px,
+      rgba(255, 255, 255, 0.01) 1px,
       transparent 1px
     ),
     linear-gradient(
       90deg,
-      rgba(255, 255, 255, 0.02) 1px,
+      rgba(255, 255, 255, 0.01) 1px,
       transparent 1px
     );
-  background-size: 40px 40px;
+  background-size: 50px 50px;
   z-index: 1;
+  opacity: 0.3;
 }
 
 /* Light sweep reflection for polished state */
@@ -158,28 +186,28 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    105deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.04) 42%,
-    rgba(163, 255, 60, 0.12) 50%,
-    rgba(255, 255, 255, 0.04) 58%,
-    transparent 70%
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.03) 40%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0.03) 60%,
+    transparent 100%
   );
-  transform: translateX(-150%);
-  animation: sweep 6s infinite ease-in-out;
+  transform: translateX(-100%);
+  animation: sweep 4s infinite ease-in-out;
   pointer-events: none;
   z-index: 2;
 }
 
 @keyframes sweep {
   0% {
-    transform: translateX(-150%);
+    transform: translateX(-100%);
   }
-  35% {
-    transform: translateX(150%);
+  40% {
+    transform: translateX(100%);
   }
   100% {
-    transform: translateX(150%);
+    transform: translateX(100%);
   }
 }
 
@@ -203,7 +231,7 @@
 
 .gallery-card__placeholder-center {
   position: relative;
-  z-index: 3;
+  z-index: 4;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -216,10 +244,12 @@
 .gallery-card__placeholder-icon {
   transition: transform var(--transition-base), stroke var(--transition-base);
   margin-bottom: 2px;
+  opacity: 0.7;
 }
 
 .gallery-card__placeholder-icon--glow {
-  filter: drop-shadow(0 0 6px rgba(163, 255, 60, 0.3));
+  filter: drop-shadow(0 0 8px rgba(163, 255, 60, 0.4));
+  opacity: 1;
 }
 
 .gallery-card__placeholder-text {
@@ -228,17 +258,19 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-muted);
+  opacity: 0.75;
 }
 
 .gallery-card__placeholder-text--after {
   color: var(--accent-primary);
   letter-spacing: 0.15em;
+  opacity: 1;
 }
 
 .gallery-card__placeholder-subtext {
   font-size: 0.65rem;
   color: var(--text-muted);
-  opacity: 0.7;
+  opacity: 0.55;
 }
 
 /* ── Hover overlay ── */
@@ -247,12 +279,12 @@
   position: absolute;
   inset: 0;
   z-index: 4;
-  /* Soft, lower-contrast bottom-up vignette to preserve surface details */
+  /* Cinematic bottom-up vignette instead of solid blur */
   background: linear-gradient(
     to top,
-    rgba(5, 5, 5, 0.85) 0%,
-    rgba(5, 5, 5, 0.15) 40%,
-    transparent 80%
+    rgba(5, 5, 5, 0.95) 0%,
+    rgba(5, 5, 5, 0.4) 60%,
+    transparent 100%
   );
   display: flex;
   align-items: flex-end;

@@ -58,11 +58,13 @@
   flex-direction: column;
   gap: var(--space-lg);
   padding: var(--space-xl) var(--space-lg);
-  background: rgba(5, 5, 5, 0.96);
+  background: rgba(8, 8, 8, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 
   cursor: default;
   transition:
-    background var(--transition-base);
+    background var(--transition-base),
+    border-color var(--transition-base);
 
   position: relative;
   overflow: hidden;
@@ -87,11 +89,12 @@
 }
 
 .service-card:hover {
-  background: rgba(10, 10, 10, 0.98);
+  background: rgba(12, 12, 12, 0.98);
+  border-color: rgba(163, 255, 60, 0.12);
 }
 
 .service-card:hover::before {
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
 /* ── Card top ── */
@@ -163,8 +166,9 @@
 
 .service-card__description {
   font-size: var(--text-sm);
-  line-height: 1.7;
+  line-height: 1.75;
   color: var(--text-secondary);
+  letter-spacing: 0.01em;
 }
 
 /* ── Card footer ── */

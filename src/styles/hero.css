@@ -5,14 +5,14 @@
 .hero {
   isolation: isolate;
   position: relative;
-  min-height: 100svh;
-  min-height: 100vh;
+  min-height: 85svh;
+  min-height: 85vh;
 
   display: flex;
   align-items: center;
 
-  padding-top: clamp(5rem, 10vw, 10rem);
-  padding-bottom: clamp(2rem, 6vw, 6rem);
+  padding-top: clamp(4.5rem, 8vw, 8rem);
+  padding-bottom: clamp(1.75rem, 5vw, 4rem);
   overflow: hidden;
 }
 
@@ -136,7 +136,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: clamp(1.5rem, 5vw, 2.25rem);
+  gap: clamp(1.25rem, 4vw, 1.75rem);
 
   max-width: 780px;
 }
@@ -329,7 +329,7 @@
   background: var(--border-primary);
 
   overflow: hidden;
-  margin-top: 1.75rem;
+  margin-top: 1.2rem;
   width: 100%;
 }
 
