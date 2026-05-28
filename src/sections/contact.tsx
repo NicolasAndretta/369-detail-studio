@@ -5,6 +5,8 @@ import { motion, useInView, type Variants } from "framer-motion";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
+const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
 const WHATSAPP_URL =
   "https://wa.me/5491100000000?text=Hola%2C%20quiero%20solicitar%20un%20turno%20en%20369%20Detail.";
 
@@ -24,7 +26,7 @@ const fadeUp: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.65, ease: EASE_OUT },
   },
 };
 
@@ -73,7 +75,7 @@ export function ContactSection() {
       className="contact section-spacing"
       aria-label="Contacto y solicitud de turno"
     >
-      {/* Background layers */}
+      {/* Background */}
       <div className="contact__bg" aria-hidden="true">
         <div className="contact__bg-light" />
         <div className="contact__bg-line" />
@@ -86,7 +88,7 @@ export function ContactSection() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          {/* Left column — copy */}
+          {/* LEFT */}
           <div className="contact__copy">
             <motion.div className="contact__eyebrow-wrap" variants={fadeUp}>
               <span className="contact__eyebrow-dot" aria-hidden="true" />
@@ -105,70 +107,77 @@ export function ContactSection() {
               Respondemos a la brevedad.
             </motion.p>
 
-            {/* Location */}
             <motion.address className="contact__address" variants={fadeUp}>
               <LocationIcon />
               <span>Dr. Horacio Casco 5140, Lugano — Buenos Aires</span>
             </motion.address>
           </div>
 
-          {/* Right column — actions */}
+          {/* RIGHT */}
           <motion.div className="contact__actions" variants={fadeIn}>
-            {/* WhatsApp CTA — primary */}
+            
+            {/* WhatsApp */}
             <a
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="contact__cta contact__cta--whatsapp"
               aria-label="Solicitar turno por WhatsApp"
-              id="contact-cta-whatsapp"
             >
               <span className="contact__cta-icon">
                 <WhatsAppIcon />
               </span>
+
               <div className="contact__cta-text">
                 <span className="contact__cta-label">Solicitar turno</span>
                 <span className="contact__cta-sub">Respondemos por WhatsApp</span>
               </div>
+
               <span className="contact__cta-arrow" aria-hidden="true">→</span>
             </a>
 
-            {/* Instagram CTA — secondary */}
+            {/* Instagram */}
             <a
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="contact__cta contact__cta--instagram"
-              aria-label="Seguir a 369 Detail en Instagram"
-              id="contact-cta-instagram"
+              aria-label="Seguir en Instagram"
             >
               <span className="contact__cta-icon">
                 <InstagramIcon />
               </span>
+
               <div className="contact__cta-text">
                 <span className="contact__cta-label">@369detail</span>
                 <span className="contact__cta-sub">Seguinos en Instagram</span>
               </div>
+
               <span className="contact__cta-arrow" aria-hidden="true">→</span>
             </a>
 
-            {/* Info card */}
-            <div className="contact__info-card" role="complementary" aria-label="Información de atención">
+            {/* Info */}
+            <div className="contact__info-card">
               <div className="contact__info-row">
                 <span className="contact__info-key">Horario</span>
                 <span className="contact__info-value">Lunes a sábado, 9:00 – 18:00</span>
               </div>
+
               <div className="contact__info-divider" />
+
               <div className="contact__info-row">
                 <span className="contact__info-key">Modalidad</span>
                 <span className="contact__info-value">Por turno programado</span>
               </div>
+
               <div className="contact__info-divider" />
+
               <div className="contact__info-row">
                 <span className="contact__info-key">Zona</span>
                 <span className="contact__info-value">Lugano, Buenos Aires</span>
               </div>
             </div>
+
           </motion.div>
         </motion.div>
       </div>

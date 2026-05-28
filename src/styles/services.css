@@ -23,72 +23,7 @@
     );
 }
 
-/* ── Header ── */
 
-.services__header {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-lg);
-  margin-bottom: clamp(3rem, 6vw, 5rem);
-  position: relative;
-  z-index: 1;
-}
-
-.services__eyebrow-wrap {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-}
-
-.services__eyebrow {
-  font-family: var(--font-display);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.35em;
-  color: var(--accent-primary);
-  text-transform: uppercase;
-}
-
-.services__eyebrow-dot {
-  display: inline-block;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--accent-primary);
-  opacity: 0.5;
-  flex-shrink: 0;
-}
-
-.services__heading {
-  font-family: var(--font-display);
-  font-size: clamp(2.2rem, 5vw, 4rem);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-  margin: 0;
-}
-
-.services__heading-accent {
-  display: inline-block;
-  background: linear-gradient(
-    135deg,
-    #ffffff 0%,
-    #d8f8a0 55%,
-    #a3ff3c 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.services__subheading {
-  font-size: clamp(var(--text-sm), 1.8vw, var(--text-base));
-  line-height: 1.7;
-  color: var(--text-secondary);
-  max-width: 500px;
-}
 
 /* ── Grid ── */
 
@@ -123,11 +58,13 @@
   flex-direction: column;
   gap: var(--space-lg);
   padding: var(--space-xl) var(--space-lg);
-  background: rgba(5, 5, 5, 0.96);
+  background: rgba(8, 8, 8, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 
   cursor: default;
   transition:
-    background var(--transition-base);
+    background var(--transition-base),
+    border-color var(--transition-base);
 
   position: relative;
   overflow: hidden;
@@ -152,11 +89,12 @@
 }
 
 .service-card:hover {
-  background: rgba(10, 10, 10, 0.98);
+  background: rgba(12, 12, 12, 0.98);
+  border-color: rgba(163, 255, 60, 0.12);
 }
 
 .service-card:hover::before {
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
 /* ── Card top ── */
@@ -228,8 +166,9 @@
 
 .service-card__description {
   font-size: var(--text-sm);
-  line-height: 1.7;
+  line-height: 1.75;
   color: var(--text-secondary);
+  letter-spacing: 0.01em;
 }
 
 /* ── Card footer ── */

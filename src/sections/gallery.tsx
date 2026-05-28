@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useInView, type Variants } from "framer-motion";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -10,17 +10,61 @@ interface GallerySlot {
   label: string;
   category: string;
   aspect: "wide" | "square";
+  beforeImage?: string;
+  afterImage?: string;
 }
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const GALLERY_SLOTS: GallerySlot[] = [
-  { id: "slot-1", label: "Corrección de pintura", category: "Pulido", aspect: "wide" },
-  { id: "slot-2", label: "Tratamiento cerámico", category: "Cerámico", aspect: "square" },
-  { id: "slot-3", label: "Detailing interior", category: "Interior", aspect: "square" },
-  { id: "slot-4", label: "Restauración estética", category: "Restauración", aspect: "wide" },
-  { id: "slot-5", label: "Protección exterior", category: "PPF", aspect: "square" },
-  { id: "slot-6", label: "Lavado técnico", category: "Lavado", aspect: "square" },
+  {
+    id: "slot-1",
+    label: "Corrección de pintura de precisión",
+    category: "Pulido",
+    aspect: "wide",
+    beforeImage: "/images/gallery/slot-1-before.jpg",
+    afterImage: "/images/gallery/slot-1-after.jpg",
+  },
+  {
+    id: "slot-2",
+    label: "Tratamiento cerámico 9H",
+    category: "Cerámico",
+    aspect: "square",
+    beforeImage: "/images/gallery/slot-2-before.jpg",
+    afterImage: "/images/gallery/slot-2-after.jpg",
+  },
+  {
+    id: "slot-3",
+    label: "Limpieza y acondicionamiento interior",
+    category: "Interior",
+    aspect: "square",
+    beforeImage: "/images/gallery/slot-3-before.jpg",
+    afterImage: "/images/gallery/slot-3-after.jpg",
+  },
+  {
+    id: "slot-4",
+    label: "Restauración de ópticas y plásticos",
+    category: "Restauración",
+    aspect: "wide",
+    beforeImage: "/images/gallery/slot-4-before.jpg",
+    afterImage: "/images/gallery/slot-4-after.jpg",
+  },
+  {
+    id: "slot-5",
+    label: "Protección PPF autoregenerativo",
+    category: "PPF",
+    aspect: "square",
+    beforeImage: "/images/gallery/slot-5-before.jpg",
+    afterImage: "/images/gallery/slot-5-after.jpg",
+  },
+  {
+    id: "slot-6",
+    label: "Lavado técnico y descontaminado",
+    category: "Lavado",
+    aspect: "square",
+    beforeImage: "/images/gallery/slot-6-before.jpg",
+    afterImage: "/images/gallery/slot-6-after.jpg",
+  },
 ];
 
 // ─── Animation variants ───────────────────────────────────────────────────────
@@ -53,24 +97,132 @@ const cardReveal: Variants = {
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 function GalleryCard({ slot }: { slot: GallerySlot }) {
+  const [showAfter, setShowAfter] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
+  const hasImages = slot.beforeImage && slot.afterImage && !imgError;
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setShowAfter((prev) => !prev);
+    }
+  };
+
+  const handleImgError = () => {
+    setImgError(true);
+  };
+
   return (
     <motion.div
       className={`gallery-card gallery-card--${slot.aspect}`}
       variants={cardReveal}
-      whileHover="hover"
-      aria-label={slot.label}
+      whileHover={{ y: -4 }}
+      onClick={() => setShowAfter((prev) => !prev)}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="button"
+      aria-label={`${slot.label}. Categoría ${slot.category}. Presioná para alternar antes y después. Mostrando: ${
+        showAfter ? "Después" : "Antes"
+      }`}
     >
-      {/* Placeholder visual */}
-      <div className="gallery-card__placeholder" aria-hidden="true">
-        <div className="gallery-card__placeholder-grid" />
-        <div className="gallery-card__placeholder-center">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-            <circle cx="8.5" cy="8.5" r="1.5" />
-            <polyline points="21 15 16 10 5 21" />
-          </svg>
-          <span className="gallery-card__placeholder-text">Próximamente</span>
+      {/* Visual content: image crossfade OR simulated placeholder */}
+      {hasImages ? (
+        <div className="gallery-card__visuals">
+          <img
+            src={slot.beforeImage}
+            alt={`${slot.label} - Antes`}
+            className={`gallery-card__img gallery-card__img--before ${
+              !showAfter ? "gallery-card__img--active" : ""
+            }`}
+            onError={handleImgError}
+          />
+          <img
+            src={slot.afterImage}
+            alt={`${slot.label} - Después`}
+            className={`gallery-card__img gallery-card__img--after ${
+              showAfter ? "gallery-card__img--active" : ""
+            }`}
+            onError={handleImgError}
+          />
         </div>
+      ) : (
+        <div
+          className={`gallery-card__placeholder ${
+            showAfter
+              ? "gallery-card__placeholder--after"
+              : "gallery-card__placeholder--before"
+          }`}
+          aria-hidden="true"
+        >
+          <div className="gallery-card__placeholder-grid" />
+
+          {/* Light sweep indicator for polished/after state */}
+          {showAfter && <div className="gallery-card__placeholder-sweep" />}
+
+          <div className="gallery-card__placeholder-center">
+            {showAfter ? (
+              <>
+                <svg
+                  width="30"
+                  height="30"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="var(--accent-primary)"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="gallery-card__placeholder-icon gallery-card__placeholder-icon--glow"
+                >
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                  <circle cx="12" cy="12" r="4" />
+                </svg>
+                <span className="gallery-card__placeholder-text gallery-card__placeholder-text--after">
+                  Acabado Espejo
+                </span>
+                <span className="gallery-card__placeholder-subtext">
+                  Tratamiento Finalizado
+                </span>
+              </>
+            ) : (
+              <>
+                <svg
+                  width="30"
+                  height="30"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="var(--text-muted)"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="gallery-card__placeholder-icon"
+                >
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                  <line x1="12" y1="22.08" x2="12" y2="12" />
+                </svg>
+                <span className="gallery-card__placeholder-text">
+                  Estado Original
+                </span>
+                <span className="gallery-card__placeholder-subtext">
+                  Superficie sin acondicionar
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Dynamic comparison badge */}
+      <div
+        className={`gallery-card__compare-badge ${
+          showAfter
+            ? "gallery-card__compare-badge--after"
+            : "gallery-card__compare-badge--before"
+        }`}
+        aria-hidden="true"
+      >
+        {showAfter ? "DESPUÉS" : "ANTES"}
       </div>
 
       {/* Hover overlay */}
@@ -82,9 +234,19 @@ function GalleryCard({ slot }: { slot: GallerySlot }) {
         aria-hidden="true"
       >
         <div className="gallery-card__overlay-content">
-          <span className="gallery-card__category">{slot.category}</span>
-          <p className="gallery-card__label">{slot.label}</p>
+          <span className="gallery-card__category">
+            {slot.category}
+          </span>
+
+          <p className="gallery-card__label">
+            {slot.label}
+          </p>
+
           <div className="gallery-card__overlay-line" />
+          
+          <span className="gallery-card__compare-action">
+            {showAfter ? "Click para ver antes" : "Click para ver después"}
+          </span>
         </div>
       </motion.div>
 
@@ -100,7 +262,11 @@ function GalleryCard({ slot }: { slot: GallerySlot }) {
 
 export function GallerySection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+
+  const isInView = useInView(sectionRef, {
+    once: true,
+    margin: "-80px",
+  });
 
   return (
     <section
@@ -114,23 +280,41 @@ export function GallerySection() {
       <div className="container">
         {/* Header */}
         <motion.div
-          className="gallery__header"
+          className="section-header"
           variants={sectionVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          <motion.div className="gallery__eyebrow-wrap" variants={fadeUp}>
-            <span className="gallery__eyebrow-dot" aria-hidden="true" />
-            <span className="gallery__eyebrow">Resultados</span>
+          <motion.div
+            className="section-eyebrow-wrap"
+            variants={fadeUp}
+          >
+            <span
+              className="section-eyebrow-dot"
+              aria-hidden="true"
+            />
+
+            <span className="section-eyebrow">
+              Resultados
+            </span>
           </motion.div>
 
-          <motion.h2 className="gallery__heading" variants={fadeUp}>
+          <motion.h2
+            className="section-heading"
+            variants={fadeUp}
+          >
             El trabajo
             <br />
-            <span className="gallery__heading-accent">habla solo</span>
+
+            <span className="section-heading-accent">
+              habla solo
+            </span>
           </motion.h2>
 
-          <motion.p className="gallery__subheading" variants={fadeUp}>
+          <motion.p
+            className="section-description"
+            variants={fadeUp}
+          >
             Galería en construcción. Próximamente los trabajos reales
             del estudio, documentados con fotografía de detalle.
           </motion.p>
@@ -155,8 +339,14 @@ export function GallerySection() {
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ delay: 0.8, duration: 0.6 }}
         >
-          <span className="gallery__notice-dot" aria-hidden="true" />
-          <p>Seguí nuestro trabajo en Instagram{" "}
+          <span
+            className="gallery__notice-dot"
+            aria-hidden="true"
+          />
+
+          <p>
+            Seguí nuestro trabajo en Instagram{" "}
+
             <a
               href="https://instagram.com/369detail"
               target="_blank"
