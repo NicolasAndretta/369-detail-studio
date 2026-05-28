@@ -98,3 +98,15 @@
   --container-width: 1280px;
   --navbar-height: 88px;
 }
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(163, 255, 60, 0.22);
+  color: #fff;
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { motion, useInView, type Variants } from "framer-motion";
 
 // ─── Easing helper (typed for Framer Motion 12) ───────────────────────────────
@@ -150,7 +150,6 @@ const cardVariants: Variants = {
 
 interface ServiceCardProps {
   service: Service;
-  index: number;
 }
 
 function ServiceCard({ service }: ServiceCardProps) {
@@ -199,23 +198,23 @@ export function ServicesSection() {
 
       <div className="container">
         <motion.div
-          className="services__header"
+          className="section-header"
           variants={sectionVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          <motion.div className="services__eyebrow-wrap" variants={headingVariants}>
-            <span className="services__eyebrow-dot" aria-hidden="true" />
-            <span className="services__eyebrow">Servicios</span>
+          <motion.div className="section-eyebrow-wrap" variants={headingVariants}>
+            <span className="section-eyebrow-dot" aria-hidden="true" />
+            <span className="section-eyebrow">Servicios</span>
           </motion.div>
 
-          <motion.h2 className="services__heading" variants={headingVariants}>
+          <motion.h2 className="section-heading" variants={headingVariants}>
             Lo que hacemos,
             <br />
-            <span className="services__heading-accent">con precisión</span>
+            <span className="section-heading-accent">con precisión</span>
           </motion.h2>
 
-          <motion.p className="services__subheading" variants={headingVariants}>
+          <motion.p className="section-description" variants={headingVariants}>
             Cada vehículo recibe un tratamiento específico según su estado y necesidades.
             Sin atajos, sin productos genéricos.
           </motion.p>
@@ -227,9 +226,9 @@ export function ServicesSection() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          {SERVICES.map((service, i) => (
-            <ServiceCard key={service.id} service={service} index={i} />
-          ))}
+          {SERVICES.map((service) => (
+  <ServiceCard key={service.id} service={service} />
+))}
         </motion.div>
       </div>
     </section>

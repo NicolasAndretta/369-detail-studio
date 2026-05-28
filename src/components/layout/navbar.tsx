@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,35 +19,48 @@ const WHATSAPP_URL =
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const lastScrollY = useRef(0);
 
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 40);
-      lastScrollY.current = window.scrollY;
-    };
+  const onScroll = () => {
+    const currentScroll = window.scrollY;
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    setScrolled(currentScroll > 24);
+  };
+
+    onScroll();
+
+    window.addEventListener("scroll", onScroll, {
+      passive: true,
+    });
+
+    return () =>
+      window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
+
     return () => {
       document.body.style.overflow = "";
     };
   }, [menuOpen]);
 
-  const closeMenu = () => setMenuOpen(false);
+  const closeMenu = useCallback(() => {
+    setMenuOpen(false);
+  }, []);
 
   return (
     <>
       <motion.header
-        className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}
+        className={`navbar ${
+          scrolled ? "navbar--scrolled" : ""
+        }`}
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        transition={{
+          duration: 0.6,
+          ease: [0.16, 1, 0.3, 1],
+        }}
         role="banner"
       >
         <div className="navbar__inner container">
@@ -55,26 +68,35 @@ export function Navbar() {
           <Link
             href="#inicio"
             className="navbar__logo"
-            aria-label="369 Detail — Inicio"
+            aria-label="369 Detail inicio"
             onClick={closeMenu}
           >
             <Image
               src="/images/branding/logo-369-detail.jpeg"
-              alt="369 Detail"
+              alt="Logo de 369 Detail"
               width={44}
               height={44}
               className="navbar__logo-img"
               priority
             />
-            <span className="navbar__logo-text">369 Detail</span>
+
+            <span className="navbar__logo-text">
+              369 Detail
+            </span>
           </Link>
 
           {/* Desktop nav */}
-          <nav className="navbar__nav" aria-label="Navegación principal">
-            <ul className="navbar__links" role="list">
+          <nav
+            className="navbar__nav"
+            aria-label="Navegación principal"
+          >
+            <ul className="navbar__links">
               {NAV_LINKS.map(({ label, href }) => (
                 <li key={href}>
-                  <Link href={href} className="navbar__link">
+                  <Link
+                    href={href}
+                    className="navbar__link"
+                  >
                     {label}
                   </Link>
                 </li>
@@ -93,58 +115,77 @@ export function Navbar() {
             Solicitar turno
           </a>
 
-          {/* Mobile hamburger */}
+          {/* Mobile button */}
           <button
             className="navbar__hamburger"
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+            onClick={() =>
+              setMenuOpen((prev) => !prev)
+            }
+            aria-label={
+              menuOpen ? "Cerrar menú" : "Abrir menú"
+            }
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
           >
-            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+            {menuOpen ? (
+              <X size={22} />
+            ) : (
+              <Menu size={22} />
+            )}
           </button>
         </div>
       </motion.header>
 
-      {/* Mobile menu overlay */}
+      {/* Mobile menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
             id="mobile-menu"
             className="mobile-menu"
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             role="dialog"
             aria-modal="true"
-            aria-label="Menú de navegación"
           >
             <nav>
-              <ul className="mobile-menu__links" role="list">
-                {NAV_LINKS.map(({ label, href }, i) => (
-                  <motion.li
-                    key={href}
-                    initial={{ opacity: 0, x: -16 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.06, duration: 0.3 }}
-                  >
-                    <Link
-                      href={href}
-                      className="mobile-menu__link"
-                      onClick={closeMenu}
+              <ul className="mobile-menu__links">
+                {NAV_LINKS.map(
+                  ({ label, href }, index) => (
+                    <motion.li
+                      key={href}
+                      initial={{
+                        opacity: 0,
+                        x: -12,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        x: 0,
+                      }}
+                      transition={{
+                        delay: index * 0.05,
+                      }}
                     >
-                      {label}
-                    </Link>
-                  </motion.li>
-                ))}
+                      <Link
+                        href={href}
+                        className="mobile-menu__link"
+                        onClick={closeMenu}
+                      >
+                        {label}
+                      </Link>
+                    </motion.li>
+                  )
+                )}
               </ul>
 
               <motion.div
+                className="mobile-menu__cta-wrap"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25, duration: 0.3 }}
-                className="mobile-menu__cta-wrap"
+                transition={{
+                  delay: 0.25,
+                }}
               >
                 <a
                   href={WHATSAPP_URL}
