@@ -11,7 +11,7 @@
   display: flex;
   align-items: center;
 
-  padding-top: clamp(4.5rem, 8vw, 8rem);
+  padding-top: clamp(calc(var(--navbar-height) + 1rem), 8vw, 8rem);
   padding-bottom: clamp(1.75rem, 5vw, 4rem);
   overflow: hidden;
 }
@@ -283,6 +283,11 @@
   transform: translateY(0);
 }
 
+.btn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 4px;
+}
+
 .btn--ghost {
   background: transparent;
   color: var(--text-secondary);
@@ -293,7 +298,8 @@
   color: var(--text-primary);
   border-color: rgba(255, 255, 255, 0.2);
   background: var(--surface-primary);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .btn--ghost:active {
@@ -450,6 +456,12 @@
   align-items: flex-start;
   justify-content: center;
   padding-top: 6px;
+}
+
+@media (max-width: 768px) or (max-height: 720px) {
+  .hero__scroll-indicator {
+    display: none;
+  }
 }
 
 .hero__scroll-dot {

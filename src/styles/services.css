@@ -59,12 +59,11 @@
   gap: var(--space-lg);
   padding: var(--space-xl) var(--space-lg);
   background: rgba(8, 8, 8, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: none;
 
   cursor: default;
   transition:
-    background var(--transition-base),
-    border-color var(--transition-base);
+    background var(--transition-base);
 
   position: relative;
   overflow: hidden;
@@ -90,7 +89,6 @@
 
 .service-card:hover {
   background: rgba(12, 12, 12, 0.98);
-  border-color: rgba(163, 255, 60, 0.12);
 }
 
 .service-card:hover::before {
@@ -119,12 +117,14 @@
 
   transition:
     background var(--transition-fast),
-    border-color var(--transition-fast);
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 .service-card:hover .service-card__icon {
   background: rgba(163, 255, 60, 0.12);
   border-color: rgba(163, 255, 60, 0.22);
+  transform: scale(1.06);
 }
 
 .service-card__tag {

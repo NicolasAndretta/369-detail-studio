@@ -54,6 +54,12 @@
   align-self: start;
 }
 
+.footer__logo:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
 .footer__logo-img {
   border-radius: var(--radius-sm);
   object-fit: cover;
@@ -105,6 +111,12 @@
   transition: color var(--transition-fast);
   cursor: pointer;
   line-height: 1.6;
+}
+
+.footer__link:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
 .footer__link:hover {

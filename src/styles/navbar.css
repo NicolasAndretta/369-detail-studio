@@ -108,6 +108,12 @@
   transition: color var(--transition-fast);
 }
 
+.navbar__link:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
 .navbar__link::after {
   content: "";
   position: absolute;
@@ -169,6 +175,11 @@
 
 .navbar__cta:active {
   transform: translateY(0);
+}
+
+.navbar__cta:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 4px;
 }
 
 .navbar__cta--full {

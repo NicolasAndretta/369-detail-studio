@@ -63,7 +63,14 @@
 
   transition:
     border-color var(--transition-base),
-    transform var(--transition-base);
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.gallery-card:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 4px;
+  border-color: rgba(163, 255, 60, 0.38);
 }
 
 @media (min-width: 1024px) {
@@ -118,9 +125,9 @@
 .gallery-card__placeholder--before {
   background: linear-gradient(
     135deg,
-    rgba(8, 8, 8, 0.95) 0%,
-    rgba(15, 15, 15, 0.85) 50%,
-    rgba(12, 12, 12, 0.92) 100%
+    #1c1c1c 0%,
+    #121212 50%,
+    #0a0a0a 100%
   );
   position: relative;
 }
@@ -130,21 +137,23 @@
   position: absolute;
   inset: 0;
   background:
+    repeating-radial-gradient(
+      circle at 45% 35%,
+      rgba(255, 255, 255, 0.015) 0px,
+      rgba(255, 255, 255, 0) 2px,
+      rgba(255, 255, 255, 0.01) 4px,
+      rgba(255, 255, 255, 0) 6px
+    ),
     radial-gradient(
-      ellipse at 35% 25%,
+      ellipse at 45% 35%,
       rgba(255, 255, 255, 0.04) 0%,
-      transparent 50%
+      transparent 60%
     );
   z-index: 0;
 }
 
 .gallery-card__placeholder--after {
-  background: linear-gradient(
-    135deg,
-    rgba(20, 20, 20, 0.98) 0%,
-    rgba(10, 10, 10, 0.95) 50%,
-    rgba(5, 5, 5, 0.98) 100%
-  );
+  background: #020202;
   position: relative;
   overflow: hidden;
 }
@@ -155,9 +164,20 @@
   inset: 0;
   background:
     radial-gradient(
-      circle at 50% 50%,
-      rgba(163, 255, 60, 0.08) 0%,
-      transparent 65%
+      circle at 55% 35%,
+      rgba(255, 255, 255, 0.18) 0%,
+      rgba(255, 255, 255, 0.03) 8%,
+      transparent 20%
+    ),
+    radial-gradient(
+      ellipse at 50% 50%,
+      rgba(163, 255, 60, 0.06) 0%,
+      transparent 70%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(20, 20, 20, 0.95) 0%,
+      rgba(5, 5, 5, 1) 100%
     );
   z-index: 0;
 }
@@ -186,28 +206,30 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    90deg,
+    105deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.03) 40%,
-    rgba(255, 255, 255, 0.06) 50%,
-    rgba(255, 255, 255, 0.03) 60%,
+    transparent 40%,
+    rgba(255, 255, 255, 0.01) 47%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.01) 53%,
+    transparent 60%,
     transparent 100%
   );
-  transform: translateX(-100%);
-  animation: sweep 4s infinite ease-in-out;
+  transform: translateX(-150%);
+  animation: sweep 6s infinite ease-in-out;
   pointer-events: none;
   z-index: 2;
 }
 
 @keyframes sweep {
   0% {
-    transform: translateX(-100%);
+    transform: translateX(-150%);
   }
-  40% {
-    transform: translateX(100%);
+  35% {
+    transform: translateX(150%);
   }
   100% {
-    transform: translateX(100%);
+    transform: translateX(150%);
   }
 }
 

@@ -30,6 +30,11 @@
     transform var(--transition-fast);
 }
 
+.whatsapp-sticky:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 4px;
+}
+
 @media (min-width: 768px) {
   .whatsapp-sticky {
     display: none; /* Hide entirely on tablet and desktop screens */
