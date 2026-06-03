@@ -1,19 +1,21 @@
 /* ============================================================
-   STICKY WHATSAPP MOBILE WIDGET
+   STICKY WHATSAPP WIDGET
    ============================================================ */
 
-.whatsapp-sticky {
+.whatsapp-sticky-wrap {
   position: fixed;
   right: 1.25rem;
   bottom: 1.25rem;
-  z-index: 90; /* Below full-screen mobile menu (99) but above standard content */
+  z-index: 90;
+}
 
+.whatsapp-sticky {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 48px;
+  gap: 8px;
+  padding: 0 14px;
   height: 48px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
 
   background: rgba(10, 10, 10, 0.85);
   border: 1px solid rgba(163, 255, 60, 0.25);
@@ -24,10 +26,13 @@
 
   cursor: pointer;
   outline-offset: 4px;
-  transition: 
-    background var(--transition-fast), 
-    border-color var(--transition-fast), 
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
     transform var(--transition-fast);
+
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .whatsapp-sticky:focus-visible {
@@ -35,36 +40,37 @@
   outline-offset: 4px;
 }
 
-@media (min-width: 768px) {
-  .whatsapp-sticky {
-    display: none; /* Hide entirely on tablet and desktop screens */
-  }
-}
-
 .whatsapp-sticky:hover,
 .whatsapp-sticky:active {
   background: rgba(15, 15, 15, 0.95);
   border-color: var(--accent-primary);
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 
 .whatsapp-sticky__icon {
   width: 20px;
   height: 20px;
+  flex-shrink: 0;
   color: var(--accent-primary);
   transition: color var(--transition-fast);
 }
 
-.whatsapp-sticky:hover .whatsapp-sticky__icon,
-.whatsapp-sticky:active .whatsapp-sticky__icon {
+.whatsapp-sticky:hover .whatsapp-sticky__icon {
   color: var(--accent-secondary);
 }
 
-/* Faint high-end pulsing ring animation */
+.whatsapp-sticky__label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--accent-primary);
+  overflow: hidden;
+  display: inline-block;
+}
+
 .whatsapp-sticky__pulse {
   position: absolute;
   inset: -1px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   border: 1px solid var(--accent-primary);
   opacity: 0;
   pointer-events: none;

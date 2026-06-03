@@ -1,71 +1,9 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Link from "next/link";
 import { motion, useInView, type Variants } from "framer-motion";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-interface GallerySlot {
-  id: string;
-  label: string;
-  category: string;
-  aspect: "wide" | "square";
-  beforeImage?: string;
-  afterImage?: string;
-}
-
-// ─── Data ─────────────────────────────────────────────────────────────────────
-
-const GALLERY_SLOTS: GallerySlot[] = [
-  {
-    id: "slot-1",
-    label: "Corrección de pintura de precisión",
-    category: "Pulido",
-    aspect: "wide",
-    beforeImage: "/images/gallery/before-1.jpg",
-    afterImage: "/images/gallery/after-1.jpg",
-  },
-  {
-    id: "slot-2",
-    label: "Tratamiento cerámico 9H",
-    category: "Cerámico",
-    aspect: "square",
-    beforeImage: "/images/gallery/before-2.jpg",
-    afterImage: "/images/gallery/after-2.jpg",
-  },
-  {
-    id: "slot-3",
-    label: "Limpieza y acondicionamiento interior",
-    category: "Interior",
-    aspect: "square",
-    beforeImage: "/images/gallery/before-3.jpg",
-    afterImage: "/images/gallery/after-3.jpg",
-  },
-  {
-    id: "slot-4",
-    label: "Restauración de ópticas y plásticos",
-    category: "Restauración",
-    aspect: "wide",
-    beforeImage: "/images/gallery/before-1.jpg",
-    afterImage: "/images/gallery/after-1.jpg",
-  },
-  {
-    id: "slot-5",
-    label: "Protección PPF autoregenerativo",
-    category: "PPF",
-    aspect: "square",
-    beforeImage: "/images/gallery/before-2.jpg",
-    afterImage: "/images/gallery/after-2.jpg",
-  },
-  {
-    id: "slot-6",
-    label: "Lavado técnico y descontaminado",
-    category: "Lavado",
-    aspect: "square",
-    beforeImage: "/images/gallery/before-3.jpg",
-    afterImage: "/images/gallery/after-3.jpg",
-  },
-];
+import { type GallerySlot, GALLERY_SLOTS } from "@/data/gallery-data";
 
 // ─── Animation variants ───────────────────────────────────────────────────────
 
@@ -96,7 +34,7 @@ const cardReveal: Variants = {
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-function GalleryCard({ slot }: { slot: GallerySlot }) {
+export function GalleryCard({ slot }: { slot: GallerySlot }) {
   const [showAfter, setShowAfter] = useState(false);
   const [imgError, setImgError] = useState(false);
 
@@ -327,9 +265,22 @@ export function GallerySection() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          {GALLERY_SLOTS.map((slot) => (
+          {GALLERY_SLOTS.slice(0, 6).map((slot) => (
             <GalleryCard key={slot.id} slot={slot} />
           ))}
+        </motion.div>
+
+        {/* Button for full gallery */}
+        <motion.div
+          className="gallery__actions"
+          variants={fadeUp}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+        >
+          <Link href="/galeria" className="btn btn--ghost">
+            Ver todos los trabajos
+            <span className="btn__arrow" aria-hidden="true">→</span>
+          </Link>
         </motion.div>
 
         {/* Bottom notice */}
