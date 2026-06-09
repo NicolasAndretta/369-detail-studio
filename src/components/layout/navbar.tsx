@@ -14,8 +14,8 @@ const NAV_LINKS = [
   { label: "Contacto", hash: "contacto" },
 ] as const;
 
-const WHATSAPP_URL =
-  "https://wa.me/5491100000000?text=Hola%2C%20quiero%20solicitar%20un%20turno%20en%20369%20Detail.";
+  const WHATSAPP_URL =
+  "https://wa.me/5491154748668?text=Hola%2C%20quiero%20solicitar%20un%20turno%20en%20369%20Detail.";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);

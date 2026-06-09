@@ -98,7 +98,7 @@ const LOCAL_BUSINESS_SCHEMA = {
   description:
     "Estética vehicular profesional en Lugano, Buenos Aires. Corrección de pintura, tratamientos cerámicos y detailing especializado.",
   url: "https://369detail.com.ar",
-  telephone: "+5491100000000",
+  telephone: "+5491154748668",
   address: {
     "@type": "PostalAddress",
     streetAddress: "Dr. Horacio Casco 5140",
@@ -120,7 +120,8 @@ const LOCAL_BUSINESS_SCHEMA = {
     },
   ],
   sameAs: [
-    "https://www.instagram.com/369detail",
+    "https://www.instagram.com/369detail/",
+    "https://www.tiktok.com/@369detail",
   ],
 };
 

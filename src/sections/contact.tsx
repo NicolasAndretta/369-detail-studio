@@ -8,9 +8,9 @@ import { motion, useInView, type Variants } from "framer-motion";
 const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const WHATSAPP_URL =
-  "https://wa.me/5491100000000?text=Hola%2C%20quiero%20solicitar%20un%20turno%20en%20369%20Detail.";
+  "https://wa.me/5491154748668?text=Hola%2C%20quiero%20solicitar%20un%20turno%20en%20369%20Detail.";
 
-const INSTAGRAM_URL = "https://instagram.com/369detail";
+const INSTAGRAM_URL = "https://www.instagram.com/369detail/";
 
 // ─── Animation variants ───────────────────────────────────────────────────────
 
