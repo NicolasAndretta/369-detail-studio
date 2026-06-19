@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# herramientas de desarrollo locales (no versionar)
+.claude/
+.agents/
+skills-lock.json
+CLAUDE.md
+AGENTS.md
+CONTEXTO-PARA-CONTINUAR.md
+*-checkpoint.md
+*-session*.md
