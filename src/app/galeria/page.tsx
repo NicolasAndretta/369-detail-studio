@@ -1,85 +1,29 @@
-"use client";
+import type { Metadata } from "next";
+import { GalleryPageClient } from "./_components/gallery-page-client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
-import { WhatsAppSticky } from "@/components/ui/whatsapp-sticky";
-import { GalleryCard } from "@/sections/gallery";
-import { ReelsSection } from "@/sections/reels";
-import { GALLERY_SLOTS, GALLERY_CATEGORIES, type GalleryCategory } from "@/data/gallery-data";
+export const metadata: Metadata = {
+  title: "Galería de Trabajos",
+  description:
+    "Resultados reales de corrección de pintura, tratamientos cerámicos y detailing en Lugano, Buenos Aires. Antes y después de cada vehículo.",
+  openGraph: {
+    title: "Galería | 369 Detail — Detailing Automotriz en Lugano",
+    description:
+      "Resultados reales de corrección de pintura, tratamientos cerámicos y detailing en Lugano, Buenos Aires.",
+    url: "https://369detail.com.ar/galeria",
+    images: [
+      {
+        url: "/images/branding/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "369 Detail — Galería de trabajos de detailing automotriz",
+      },
+    ],
+  },
+  alternates: {
+    canonical: "https://369detail.com.ar/galeria",
+  },
+};
 
 export default function GalleryPage() {
-  const [activeCategory, setActiveCategory] = useState<GalleryCategory>("Todos");
-
-  const filtered = activeCategory === "Todos"
-    ? GALLERY_SLOTS
-    : GALLERY_SLOTS.filter((slot) => slot.category === activeCategory);
-
-  return (
-    <>
-      <Navbar />
-
-      <main className="gallery-page">
-        <div className="gallery__bg" aria-hidden="true" />
-
-        <div className="container">
-          <div className="section-header">
-            <div className="section-eyebrow-wrap">
-              <span className="section-eyebrow-dot" aria-hidden="true" />
-              <span className="section-eyebrow">Trabajos</span>
-            </div>
-            <h1 className="section-heading">
-              Galería
-              <br />
-              <span className="section-heading-accent">Completa</span>
-            </h1>
-            <p className="section-description">
-              Explorá los resultados reales de cada vehículo tratado en nuestro estudio.
-              Hacé click en cualquier tarjeta para ver el Antes y Después.
-            </p>
-          </div>
-
-          {/* Filtros */}
-          <div className="gallery-filters" role="group" aria-label="Filtrar por categoría">
-            {GALLERY_CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                className={`gallery-filter__btn ${activeCategory === cat ? "gallery-filter__btn--active" : ""}`}
-                onClick={() => setActiveCategory(cat)}
-                aria-pressed={activeCategory === cat}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          {/* Grid */}
-          <div className="gallery__grid">
-            {filtered.length > 0 ? (
-              filtered.map((slot) => (
-                <GalleryCard key={slot.id} slot={slot} />
-              ))
-            ) : (
-              <p className="gallery-filters__empty">
-                No hay trabajos en esta categoría todavía.
-              </p>
-            )}
-          </div>
-
-          <div className="gallery__actions" style={{ marginTop: "var(--space-2xl)" }}>
-            <Link href="/" className="btn btn--ghost">
-              Volver al inicio
-              <span className="btn__arrow" style={{ transform: "rotate(180deg)", display: "inline-block", marginLeft: "4px" }} aria-hidden="true">→</span>
-            </Link>
-          </div>
-        </div>
-
-        <ReelsSection />
-      </main>
-
-      <Footer />
-      <WhatsAppSticky />
-    </>
-  );
+  return <GalleryPageClient />;
 }

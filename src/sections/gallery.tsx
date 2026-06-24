@@ -73,6 +73,8 @@ export function GalleryCard({ slot }: { slot: GallerySlot }) {
             className={`gallery-card__img gallery-card__img--before ${
               !showAfter ? "gallery-card__img--active" : ""
             }`}
+            loading="lazy"
+            decoding="async"
             onError={handleImgError}
           />
           <img
@@ -81,6 +83,8 @@ export function GalleryCard({ slot }: { slot: GallerySlot }) {
             className={`gallery-card__img gallery-card__img--after ${
               showAfter ? "gallery-card__img--active" : ""
             }`}
+            loading="lazy"
+            decoding="async"
             onError={handleImgError}
           />
         </div>
@@ -253,8 +257,9 @@ export function GallerySection() {
             className="section-description"
             variants={fadeUp}
           >
-            Galería en construcción. Próximamente los trabajos reales
-            del estudio, documentados con fotografía de detalle.
+            Tocá cualquier imagen para ver la transformación completa.
+            Cada trabajo documentado refleja el nivel de detalle y
+            precisión que aplicamos en cada vehículo.
           </motion.p>
         </motion.div>
 

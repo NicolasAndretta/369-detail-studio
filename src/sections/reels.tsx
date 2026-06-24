@@ -58,6 +58,8 @@ function VideoCard({ video, onClick }: VideoCardProps) {
           src={video.thumbnail}
           alt={video.title}
           className="reel-card__img"
+          loading="lazy"
+          decoding="async"
         />
         <div className="reel-card__overlay" aria-hidden="true" />
         <div className="reel-card__play" aria-hidden="true">

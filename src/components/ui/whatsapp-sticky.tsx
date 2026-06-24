@@ -10,8 +10,10 @@ const WHATSAPP_URL =
 export function WhatsAppSticky() {
   const [isVisible, setIsVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isTouchOnly, setIsTouchOnly] = useState(false);
 
   useEffect(() => {
+    setIsTouchOnly(window.matchMedia("(hover: none)").matches);
     const handleScroll = () => {
       setIsVisible(window.scrollY > 100);
     };
@@ -53,19 +55,25 @@ export function WhatsAppSticky() {
               <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.555 4.116 1.524 5.842L0 24l6.338-1.503A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.814 9.814 0 01-5.007-1.374l-.359-.214-3.72.882.937-3.617-.234-.372A9.817 9.817 0 012.182 12C2.182 6.574 6.574 2.182 12 2.182S21.818 6.574 21.818 12 17.426 21.818 12 21.818z" />
             </svg>
 
-            <AnimatePresence>
-              {isExpanded && (
-                <motion.span
-                  className="whatsapp-sticky__label"
-                  initial={{ opacity: 0, width: 0 }}
-                  animate={{ opacity: 1, width: "auto" }}
-                  exit={{ opacity: 0, width: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  Solicitar turno
-                </motion.span>
-              )}
-            </AnimatePresence>
+            {isTouchOnly ? (
+              <span className="whatsapp-sticky__label">
+                Solicitar turno
+              </span>
+            ) : (
+              <AnimatePresence>
+                {isExpanded && (
+                  <motion.span
+                    className="whatsapp-sticky__label"
+                    initial={{ opacity: 0, width: 0 }}
+                    animate={{ opacity: 1, width: "auto" }}
+                    exit={{ opacity: 0, width: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    Solicitar turno
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            )}
           </Link>
         </motion.div>
       )}

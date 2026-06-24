@@ -10,6 +10,7 @@ import "../styles/gallery.css";
 import "../styles/contact.css";
 import "../styles/whatsapp-sticky.css";
 import "../styles/footer.css";
+import "../styles/order-status.css";
 
 const inter = Inter({
   subsets: ["latin"],

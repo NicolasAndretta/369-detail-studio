@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/layout/navbar";
 import { HeroSection } from "@/sections/hero";
+import { OrderStatusSection } from "@/sections/order-status";
 import { ServicesSection } from "@/sections/services";
 import { GallerySection } from "@/sections/gallery";
 import { ContactSection } from "@/sections/contact";
@@ -12,6 +13,7 @@ export default function HomePage() {
       <Navbar />
       <main>
         <HeroSection />
+        <OrderStatusSection />
         <ServicesSection />
         <GallerySection />
         <ContactSection />

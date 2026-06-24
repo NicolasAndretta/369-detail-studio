@@ -327,6 +327,16 @@
   transform: translateY(0);
 }
 
+/* On touch devices: always show overlay content (no hover) */
+@media (hover: none) {
+  .gallery-card__overlay {
+    opacity: 0.85;
+  }
+  .gallery-card__overlay-content {
+    transform: translateY(0);
+  }
+}
+
 .gallery-card__category {
   font-size: 0.65rem;
   font-weight: 700;
