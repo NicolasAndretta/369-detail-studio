@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   motion,
   useScroll,
   useTransform,
   useInView,
+  useReducedMotion,
   type Variants,
 } from "framer-motion";
 
@@ -31,6 +32,48 @@ const METRICS = [
 ] as const;
 
 const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+// ─── Hero slideshow (rotativo) ────────────────────────────────────────────────
+
+const HERO_IMAGES = [
+  { src: "/images/gallery/hero-1-amarok.webp", label: "VW Amarok" },
+  { src: "/images/gallery/hero-2-bmw.webp", label: "BMW S1000R" },
+  { src: "/images/gallery/hero-3-mercedes.webp", label: "Mercedes-Benz 300 CE" },
+] as const;
+
+const toAvif = (src: string) => src.replace(/\.webp$/, ".avif");
+
+function HeroSlideshow() {
+  const [idx, setIdx] = useState(0);
+  const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (reduceMotion) return;
+    const timer = setInterval(
+      () => setIdx((i) => (i + 1) % HERO_IMAGES.length),
+      5000
+    );
+    return () => clearInterval(timer);
+  }, [reduceMotion]);
+
+  return (
+    <div className="hero__media" aria-hidden="true">
+      {HERO_IMAGES.map((img, i) => (
+        <picture key={img.src}>
+          <source srcSet={toAvif(img.src)} type="image/avif" />
+          <source srcSet={img.src} type="image/webp" />
+          <img
+            src={img.src}
+            alt=""
+            className={`hero__media-img ${i === idx ? "hero__media-img--active" : ""}`}
+            loading={i === 0 ? "eager" : "lazy"}
+            decoding="async"
+          />
+        </picture>
+      ))}
+    </div>
+  );
+}
 
 // ─── Animation variants ───────────────────────────────────────────────────────
 
@@ -169,6 +212,7 @@ export function HeroSection() {
       className="hero"
       aria-label="Sección principal — 369 Detail"
     >
+      <HeroSlideshow />
       <HeroBackground />
 
       <motion.div

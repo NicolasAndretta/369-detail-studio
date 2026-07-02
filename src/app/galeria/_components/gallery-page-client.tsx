@@ -7,14 +7,15 @@ import { Footer } from "@/components/layout/footer";
 import { WhatsAppSticky } from "@/components/ui/whatsapp-sticky";
 import { GalleryCard } from "@/sections/gallery";
 import { ReelsSection } from "@/sections/reels";
-import { GALLERY_SLOTS, GALLERY_CATEGORIES, type GalleryCategory } from "@/data/gallery-data";
+import { GALLERY_VEHICLES, GALLERY_CATEGORIES, type GalleryFilter } from "@/data/gallery-data";
 
 export function GalleryPageClient() {
-  const [activeCategory, setActiveCategory] = useState<GalleryCategory>("Todos");
+  const [activeCategory, setActiveCategory] = useState<GalleryFilter>("Todos");
 
-  const filtered = activeCategory === "Todos"
-    ? GALLERY_SLOTS
-    : GALLERY_SLOTS.filter((slot) => slot.category === activeCategory);
+  const filtered =
+    activeCategory === "Todos"
+      ? GALLERY_VEHICLES
+      : GALLERY_VEHICLES.filter((v) => v.category === activeCategory);
 
   return (
     <>
@@ -36,7 +37,7 @@ export function GalleryPageClient() {
             </h1>
             <p className="section-description">
               Explorá los resultados reales de cada vehículo tratado en nuestro estudio.
-              Hacé click en cualquier tarjeta para ver el Antes y Después.
+              Tocá una tarjeta para ver el Antes y Después, y navegá los ángulos de cada trabajo.
             </p>
           </div>
 
@@ -55,8 +56,8 @@ export function GalleryPageClient() {
 
           <div className="gallery__grid">
             {filtered.length > 0 ? (
-              filtered.map((slot) => (
-                <GalleryCard key={slot.id} slot={slot} />
+              filtered.map((vehicle) => (
+                <GalleryCard key={vehicle.id} vehicle={vehicle} />
               ))
             ) : (
               <p className="gallery-filters__empty">

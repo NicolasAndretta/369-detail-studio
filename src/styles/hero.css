@@ -18,6 +18,36 @@
 
 /* ── Background layers ── */
 
+/* Slideshow rotativo (capa más baja) */
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: var(--background-primary);
+}
+
+.hero__media picture {
+  display: contents;
+}
+
+.hero__media-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out;
+  will-change: opacity;
+}
+
+.hero__media-img--active {
+  opacity: 1;
+}
+
 .hero__bg {
   position: absolute;
   inset: 0;
@@ -25,15 +55,40 @@
   pointer-events: none;
 }
 
+/* Scrim de legibilidad sobre la foto: oscuro a la izquierda/abajo,
+   más claro a la derecha para que el vehículo respire. */
 .hero__bg-base {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(
-      ellipse 80% 60% at 50% 0%,
-      rgba(20, 20, 20, 0.9) 0%,
-      var(--background-primary) 70%
+    linear-gradient(
+      180deg,
+      rgba(5, 5, 5, 0.6) 0%,
+      rgba(5, 5, 5, 0) 22%,
+      rgba(5, 5, 5, 0) 58%,
+      rgba(5, 5, 5, 0.88) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(5, 5, 5, 0.94) 0%,
+      rgba(5, 5, 5, 0.8) 42%,
+      rgba(5, 5, 5, 0.55) 78%,
+      rgba(5, 5, 5, 0.62) 100%
     );
+}
+
+/* En pantallas angostas el texto ocupa todo el ancho: oscurecer parejo. */
+@media (max-width: 1100px) {
+  .hero__bg-base {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(5, 5, 5, 0.6) 0%,
+        rgba(5, 5, 5, 0.35) 30%,
+        rgba(5, 5, 5, 0.55) 65%,
+        rgba(5, 5, 5, 0.9) 100%
+      );
+  }
 }
 
 .hero__bg-light--top {
