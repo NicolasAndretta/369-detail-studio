@@ -7,7 +7,6 @@ import "../styles/navbar.css";
 import "../styles/hero.css";
 import "../styles/services.css";
 import "../styles/gallery.css";
-import "../styles/nuestro-espacio.css";
 import "../styles/contact.css";
 import "../styles/whatsapp-sticky.css";
 import "../styles/footer.css";

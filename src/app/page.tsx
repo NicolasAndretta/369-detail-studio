@@ -3,8 +3,6 @@ import { HeroSection } from "@/sections/hero";
 import { OrderStatusSection } from "@/sections/order-status";
 import { ServicesSection } from "@/sections/services";
 import { GallerySection } from "@/sections/gallery";
-import { NuestroEspacioSection } from "@/sections/nuestro-espacio";
-import { SHOW_NUESTRO_ESPACIO } from "@/config/features";
 import { ContactSection } from "@/sections/contact";
 import { Footer } from "@/components/layout/footer";
 import { WhatsAppSticky } from "@/components/ui/whatsapp-sticky";
@@ -18,7 +16,6 @@ export default function HomePage() {
         <OrderStatusSection />
         <ServicesSection />
         <GallerySection />
-        {SHOW_NUESTRO_ESPACIO && <NuestroEspacioSection />}
         <ContactSection />
       </main>
       <Footer />

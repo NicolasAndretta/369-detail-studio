@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import Link from "next/link";
 import {
   motion,
@@ -31,46 +31,6 @@ const METRICS = [
 ] as const;
 
 const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
-
-// ─── Hero slideshow (rotativo) ────────────────────────────────────────────────
-
-const HERO_IMAGES = [
-  { src: "/images/gallery/hero-1-amarok.webp", label: "VW Amarok" },
-  { src: "/images/gallery/hero-2-bmw.webp", label: "BMW S1000R" },
-  { src: "/images/gallery/hero-3-mercedes.webp", label: "Mercedes-Benz 300 CE" },
-] as const;
-
-const toAvif = (src: string) => src.replace(/\.webp$/, ".avif");
-
-function HeroSlideshow({ variant }: { variant: "bleed" | "panel" }) {
-  const [idx, setIdx] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(
-      () => setIdx((i) => (i + 1) % HERO_IMAGES.length),
-      4500
-    );
-    return () => clearInterval(timer);
-  }, []);
-
-  return (
-    <div className={`hero__media hero__media--${variant}`} aria-hidden="true">
-      {HERO_IMAGES.map((img, i) => (
-        <picture key={img.src}>
-          <source srcSet={toAvif(img.src)} type="image/avif" />
-          <source srcSet={img.src} type="image/webp" />
-          <img
-            src={img.src}
-            alt=""
-            className={`hero__media-img ${i === idx ? "hero__media-img--active" : ""}`}
-            loading={i === 0 ? "eager" : "lazy"}
-            decoding="async"
-          />
-        </picture>
-      ))}
-    </div>
-  );
-}
 
 // ─── Animation variants ───────────────────────────────────────────────────────
 
@@ -209,7 +169,6 @@ export function HeroSection() {
       className="hero"
       aria-label="Sección principal — 369 Detail"
     >
-      <HeroSlideshow variant="bleed" />
       <HeroBackground />
 
       <motion.div
@@ -296,16 +255,6 @@ export function HeroSection() {
           >
             {metrics}
           </motion.div>
-        </motion.div>
-
-        <motion.div
-          className="hero__panel"
-          variants={fadeIn}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          aria-hidden="true"
-        >
-          <HeroSlideshow variant="panel" />
         </motion.div>
 
         <motion.div
