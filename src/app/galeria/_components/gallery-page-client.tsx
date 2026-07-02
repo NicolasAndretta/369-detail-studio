@@ -7,15 +7,15 @@ import { Footer } from "@/components/layout/footer";
 import { WhatsAppSticky } from "@/components/ui/whatsapp-sticky";
 import { GalleryCard } from "@/sections/gallery";
 import { ReelsSection } from "@/sections/reels";
-import { GALLERY_VEHICLES, GALLERY_CATEGORIES, type GalleryFilter } from "@/data/gallery-data";
+import { GALLERY_WORKS, GALLERY_CATEGORIES, type GalleryFilter } from "@/data/gallery-data";
 
 export function GalleryPageClient() {
   const [activeCategory, setActiveCategory] = useState<GalleryFilter>("Todos");
 
   const filtered =
     activeCategory === "Todos"
-      ? GALLERY_VEHICLES
-      : GALLERY_VEHICLES.filter((v) => v.category === activeCategory);
+      ? GALLERY_WORKS
+      : GALLERY_WORKS.filter((w) => w.category === activeCategory);
 
   return (
     <>
@@ -56,8 +56,8 @@ export function GalleryPageClient() {
 
           <div className="gallery__grid">
             {filtered.length > 0 ? (
-              filtered.map((vehicle) => (
-                <GalleryCard key={vehicle.id} vehicle={vehicle} />
+              filtered.map((work) => (
+                <GalleryCard key={work.id} work={work} />
               ))
             ) : (
               <p className="gallery-filters__empty">

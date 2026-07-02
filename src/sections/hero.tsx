@@ -7,7 +7,6 @@ import {
   useScroll,
   useTransform,
   useInView,
-  useReducedMotion,
   type Variants,
 } from "framer-motion";
 
@@ -43,21 +42,19 @@ const HERO_IMAGES = [
 
 const toAvif = (src: string) => src.replace(/\.webp$/, ".avif");
 
-function HeroSlideshow() {
+function HeroSlideshow({ variant }: { variant: "bleed" | "panel" }) {
   const [idx, setIdx] = useState(0);
-  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    if (reduceMotion) return;
     const timer = setInterval(
       () => setIdx((i) => (i + 1) % HERO_IMAGES.length),
-      5000
+      4500
     );
     return () => clearInterval(timer);
-  }, [reduceMotion]);
+  }, []);
 
   return (
-    <div className="hero__media" aria-hidden="true">
+    <div className={`hero__media hero__media--${variant}`} aria-hidden="true">
       {HERO_IMAGES.map((img, i) => (
         <picture key={img.src}>
           <source srcSet={toAvif(img.src)} type="image/avif" />
@@ -212,7 +209,7 @@ export function HeroSection() {
       className="hero"
       aria-label="Sección principal — 369 Detail"
     >
-      <HeroSlideshow />
+      <HeroSlideshow variant="bleed" />
       <HeroBackground />
 
       <motion.div
@@ -299,6 +296,16 @@ export function HeroSection() {
           >
             {metrics}
           </motion.div>
+        </motion.div>
+
+        <motion.div
+          className="hero__panel"
+          variants={fadeIn}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          aria-hidden="true"
+        >
+          <HeroSlideshow variant="panel" />
         </motion.div>
 
         <motion.div

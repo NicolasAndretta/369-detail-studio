@@ -2,8 +2,8 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence, useInView, type Variants } from "framer-motion";
-import { type GalleryVehicle, GALLERY_VEHICLES } from "@/data/gallery-data";
+import { motion, useInView, type Variants } from "framer-motion";
+import { type GalleryWork, HOME_WORKS } from "@/data/gallery-data";
 
 // ─── Animation variants ───────────────────────────────────────────────────────
 
@@ -65,19 +65,19 @@ function Picture({
 
 // ─── Gallery card (multi-ángulo) ───────────────────────────────────────────────
 
-export function GalleryCard({ vehicle }: { vehicle: GalleryVehicle }) {
+export function GalleryCard({ work }: { work: GalleryWork }) {
   const [angleIdx, setAngleIdx] = useState(0);
-  const [showAfter, setShowAfter] = useState(true);
+  const [showAfter, setShowAfter] = useState(false);
   const [imgError, setImgError] = useState(false);
 
-  const angle = vehicle.angles[angleIdx];
+  const angle = work.angles[angleIdx];
   const hasBefore = !!angle.beforeImage && !imgError;
-  const multi = vehicle.angles.length > 1;
+  const multi = work.angles.length > 1;
 
   const goAngle = (dir: number) => {
-    const len = vehicle.angles.length;
+    const len = work.angles.length;
     setAngleIdx((i) => (i + dir + len) % len);
-    setShowAfter(true);
+    setShowAfter(false);
     setImgError(false);
   };
 
@@ -100,7 +100,7 @@ export function GalleryCard({ vehicle }: { vehicle: GalleryVehicle }) {
 
   return (
     <motion.div
-      className={`gallery-card gallery-card--${vehicle.aspect}`}
+      className="gallery-card"
       variants={cardReveal}
       whileHover={{ y: -4 }}
       onClick={toggle}
@@ -108,41 +108,30 @@ export function GalleryCard({ vehicle }: { vehicle: GalleryVehicle }) {
       tabIndex={0}
       role="group"
       aria-roledescription="Trabajo de galería"
-      aria-label={`${vehicle.vehicle} — ${vehicle.detail}. Ángulo: ${angle.label}.${
+      aria-label={`${work.service}. Ángulo: ${angle.label}.${
         hasBefore
           ? ` Mostrando ${showAfter ? "Después" : "Antes"}. Tocá para alternar.`
           : ""
       }`}
     >
-      {/* Visuals — crossfade antes/después dentro del ángulo, fade al cambiar de ángulo */}
+      {/* Visuals — crossfade antes/después; al cambiar de ángulo se actualiza el src */}
       <div className="gallery-card__visuals">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={angleIdx}
-            className="gallery-card__frame"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.35, ease: "easeInOut" }}
-          >
-            {hasBefore && (
-              <Picture
-                src={angle.beforeImage!}
-                alt={`${vehicle.vehicle} — ${angle.label} — Antes`}
-                className={`gallery-card__img ${!showAfter ? "gallery-card__img--active" : ""}`}
-                onError={() => setImgError(true)}
-              />
-            )}
-            <Picture
-              src={angle.afterImage}
-              alt={`${vehicle.vehicle} — ${angle.label}${hasBefore ? " — Después" : ""}`}
-              className={`gallery-card__img ${
-                showAfter || !hasBefore ? "gallery-card__img--active" : ""
-              }`}
-              onError={() => setImgError(true)}
-            />
-          </motion.div>
-        </AnimatePresence>
+        {hasBefore && (
+          <Picture
+            src={angle.beforeImage!}
+            alt={`${work.service} — ${angle.label} — Antes`}
+            className={`gallery-card__img ${!showAfter ? "gallery-card__img--active" : ""}`}
+            onError={() => setImgError(true)}
+          />
+        )}
+        <Picture
+          src={angle.afterImage}
+          alt={`${work.service} — ${angle.label}${hasBefore ? " — Después" : ""}`}
+          className={`gallery-card__img ${
+            showAfter || !hasBefore ? "gallery-card__img--active" : ""
+          }`}
+          onError={() => setImgError(true)}
+        />
       </div>
 
       {/* Badge antes/después (solo si hay par) */}
@@ -159,7 +148,7 @@ export function GalleryCard({ vehicle }: { vehicle: GalleryVehicle }) {
 
       {/* Tag categoría (arriba izquierda) */}
       <div className="gallery-card__tag">
-        <span>{vehicle.category}</span>
+        <span>{work.category}</span>
       </div>
 
       {/* Navegación de ángulos — flechas laterales */}
@@ -193,9 +182,7 @@ export function GalleryCard({ vehicle }: { vehicle: GalleryVehicle }) {
       {/* Overlay info */}
       <div className="gallery-card__overlay" aria-hidden="true">
         <div className="gallery-card__overlay-content">
-          <span className="gallery-card__category">{vehicle.detail}</span>
-
-          <p className="gallery-card__label">{vehicle.vehicle}</p>
+          <p className="gallery-card__label">{work.service}</p>
 
           <div className="gallery-card__meta">
             <span className="gallery-card__angle">{angle.label}</span>
@@ -203,7 +190,7 @@ export function GalleryCard({ vehicle }: { vehicle: GalleryVehicle }) {
               <>
                 <span className="gallery-card__meta-sep">·</span>
                 <span className="gallery-card__counter">
-                  {angleIdx + 1}/{vehicle.angles.length}
+                  {angleIdx + 1}/{work.angles.length}
                 </span>
               </>
             )}
@@ -261,8 +248,8 @@ export function GallerySection() {
           </motion.h2>
 
           <motion.p className="section-description" variants={fadeUp}>
-            Cada vehículo, sus ángulos reales. Tocá una imagen para ver la
-            transformación y navegá los distintos ángulos de cada trabajo.
+            Un trabajo por cada servicio. Tocá una imagen para ver la
+            transformación y usá las flechas para recorrer los ángulos.
           </motion.p>
         </motion.div>
 
@@ -273,8 +260,8 @@ export function GallerySection() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          {GALLERY_VEHICLES.slice(0, 6).map((vehicle) => (
-            <GalleryCard key={vehicle.id} vehicle={vehicle} />
+          {HOME_WORKS.map((work) => (
+            <GalleryCard key={work.id} work={work} />
           ))}
         </motion.div>
 
