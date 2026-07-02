@@ -1,115 +1,190 @@
-export interface GallerySlot {
-  id: string;
+// ============================================================
+//  GALERÍA — modelo por trabajo (multi-ángulo)
+//  Cada trabajo es UNA tarjeta con uno o varios ángulos.
+//  El PRIMER ángulo es la cara de la tarjeta → siempre la mejor foto.
+//  Un ángulo con `beforeImage` muestra Antes/Después (click alterna).
+//  El antes/después se usa SOLO donde el "antes" es real y notorio
+//  (ruedas embarradas). El resto son galerías de fotos.
+//  `home: true` → aparece en la galería del inicio (1 por servicio).
+// ============================================================
+
+export type GalleryCategory =
+  | "Lavado"
+  | "Abrillantado"
+  | "Cerámico"
+  | "Acrílico"
+  | "Interior"
+  | "Motor y Chasis";
+
+export interface GalleryAngle {
   label: string;
-  category: "Lavado" | "Abrillantado" | "Interior" | "Acrílico" | "Cerámico" | "Motor y Chasis";
-  aspect: "wide" | "square";
+  afterImage: string;
+  /** "antes" opcional — solo cuando hay una transformación real. */
   beforeImage?: string;
-  afterImage?: string;
 }
 
-export const GALLERY_SLOTS: GallerySlot[] = [
+export interface GalleryWork {
+  id: string;
+  service: string;
+  category: GalleryCategory;
+  home: boolean;
+  angles: GalleryAngle[];
+}
+
+const G = "/images/gallery";
+
+export const GALLERY_WORKS: GalleryWork[] = [
+  // ─────────── INICIO: 1 trabajo por servicio (todos distintos) ───────────
+
+  // Lavado detallado → MOTO (galería, sin antes real)
   {
-    id: "slot-1",
-    label: "Lavado detallado completo",
+    id: "lavado-moto",
+    service: "Lavado detallado",
     category: "Lavado",
-    aspect: "wide",
+    home: true,
+    angles: [
+      {
+        label: "Rueda trasera",
+        beforeImage: `${G}/moto-bmw-rueda-antes.webp`,
+        afterImage: `${G}/moto-bmw-rueda-despues.webp`,
+      },
+      { label: "Lateral", afterImage: `${G}/hero-2-bmw.webp` },
+      { label: "Frente", afterImage: `${G}/moto-bmw-frente.webp` },
+      { label: "Detalle", afterImage: `${G}/moto-bmw-detalle.webp` },
+    ],
   },
+
+  // Tratamiento cerámico → MERCEDES (galería)
   {
-    id: "slot-2",
-    label: "Tratamiento cerámico 9H",
+    id: "ceramico-mercedes",
+    service: "Tratamiento cerámico",
     category: "Cerámico",
-    aspect: "square",
+    home: true,
+    angles: [
+      { label: "Trasera", afterImage: `${G}/auto-mercedes-carroceria-despues.webp` },
+      { label: "Frente", afterImage: `${G}/auto-mercedes-frente.webp` },
+      { label: "Detalle", afterImage: `${G}/auto-mercedes-detalle.webp` },
+      { label: "Bajos", afterImage: `${G}/auto-mercedes-bajos.webp` },
+    ],
   },
+
+  // Abrillantado → SONIC (galería)
   {
-    id: "slot-3",
-    label: "Limpieza y acondicionamiento interior",
-    category: "Interior",
-    aspect: "square",
-  },
-  {
-    id: "slot-4",
-    label: "Abrillantado y realce de pintura",
+    id: "abrillantado-sonic",
+    service: "Abrillantado y realce de pintura",
     category: "Abrillantado",
-    aspect: "wide",
+    home: true,
+    angles: [
+      { label: "Exterior", afterImage: `${G}/auto-sonic-exterior.webp` },
+      { label: "Perfil", afterImage: `${G}/auto-sonic-perfil.webp` },
+    ],
   },
+
+  // Lavado de motor → SONIC (motor)
   {
-    id: "slot-5",
-    label: "Tratamiento acrílico 6 meses",
-    category: "Acrílico",
-    aspect: "square",
-  },
-  {
-    id: "slot-6",
-    label: "Lavado de motor y chasis",
+    id: "motor-sonic",
+    service: "Lavado de motor y chasis",
     category: "Motor y Chasis",
-    aspect: "square",
+    home: true,
+    angles: [
+      { label: "Motor", afterImage: `${G}/auto-sonic-motor.webp` },
+    ],
   },
 
-  // ── Slots futuros — descomentá cuando tengas las fotos ──────────────────────
+  // Limpieza de interior → AMAROK gris
+  {
+    id: "interior-amarok",
+    service: "Limpieza de interior",
+    category: "Interior",
+    home: true,
+    angles: [
+      { label: "Butacas y tablero", afterImage: `${G}/camioneta-amarok-gris-interior.webp` },
+      { label: "Detalle", afterImage: `${G}/camioneta-amarok-gris-interior-2.webp` },
+    ],
+  },
 
-  // {
-  //   id: "slot-7",
-  //   label: "Lavado detallado — SUV",
-  //   category: "Lavado",
-  //   aspect: "wide",
-  //   beforeImage: "/images/gallery/before-7.jpg",
-  //   afterImage: "/images/gallery/after-7.jpg",
-  // },
+  // Tratamiento acrílico → BERLINGO
+  {
+    id: "acrilico-berlingo",
+    service: "Tratamiento acrílico",
+    category: "Acrílico",
+    home: true,
+    angles: [
+      { label: "Exterior", afterImage: `${G}/auto-berlingo-exterior.webp` },
+    ],
+  },
 
-  // {
-  //   id: "slot-8",
-  //   label: "Tratamiento cerámico — sedan",
-  //   category: "Cerámico",
-  //   aspect: "square",
-  //   beforeImage: "/images/gallery/before-8.jpg",
-  //   afterImage: "/images/gallery/after-8.jpg",
-  // },
+  // ─────────── SOLO /galeria: el resto de los trabajos ───────────
+  // (las Amarok llevan el antes/después real en las ruedas)
 
-  // {
-  //   id: "slot-9",
-  //   label: "Limpieza de interior — pickup",
-  //   category: "Interior",
-  //   aspect: "square",
-  //   beforeImage: "/images/gallery/before-9.jpg",
-  //   afterImage: "/images/gallery/after-9.jpg",
-  // },
+  {
+    id: "lavado-amarok-gris",
+    service: "Lavado detallado",
+    category: "Lavado",
+    home: false,
+    angles: [
+      {
+        label: "Ruedas",
+        beforeImage: `${G}/camioneta-amarok-gris-rueda-antes.webp`,
+        afterImage: `${G}/camioneta-amarok-gris-rueda-despues.webp`,
+      },
+      { label: "Exterior", afterImage: `${G}/hero-1-amarok.webp` },
+      { label: "Interior", afterImage: `${G}/camioneta-amarok-gris-interior.webp` },
+    ],
+  },
 
-  // {
-  //   id: "slot-10",
-  //   label: "Abrillantado — deportivo",
-  //   category: "Abrillantado",
-  //   aspect: "wide",
-  //   beforeImage: "/images/gallery/before-10.jpg",
-  //   afterImage: "/images/gallery/after-10.jpg",
-  // },
+  {
+    id: "lavado-amarok-champagne",
+    service: "Lavado detallado",
+    category: "Lavado",
+    home: false,
+    angles: [
+      {
+        label: "Ruedas",
+        beforeImage: `${G}/camioneta-amarok-champagne-rueda-antes.webp`,
+        afterImage: `${G}/camioneta-amarok-champagne-rueda-despues.webp`,
+      },
+      { label: "Exterior", afterImage: `${G}/camioneta-amarok-champagne-exterior.webp` },
+      { label: "Frente", afterImage: `${G}/camioneta-amarok-champagne-frente.webp` },
+      { label: "Perfil", afterImage: `${G}/camioneta-amarok-champagne-perfil.webp` },
+    ],
+  },
 
-  // {
-  //   id: "slot-11",
-  //   label: "Tratamiento acrílico — hatchback",
-  //   category: "Acrílico",
-  //   aspect: "square",
-  //   beforeImage: "/images/gallery/before-11.jpg",
-  //   afterImage: "/images/gallery/after-11.jpg",
-  // },
+  {
+    id: "lavado-amarok-blanca",
+    service: "Lavado detallado",
+    category: "Lavado",
+    home: false,
+    angles: [
+      {
+        label: "Ruedas",
+        beforeImage: `${G}/camioneta-amarok-blanca-rueda-antes.webp`,
+        afterImage: `${G}/camioneta-amarok-blanca-rueda-despues.webp`,
+      },
+      { label: "Frente", afterImage: `${G}/camioneta-amarok-blanca-frente.webp` },
+      { label: "Exterior", afterImage: `${G}/camioneta-amarok-blanca-exterior.webp` },
+      { label: "Portón", afterImage: `${G}/camioneta-amarok-blanca-porton.webp` },
+    ],
+  },
+];
 
-  // {
-  //   id: "slot-12",
-  //   label: "Lavado de motor — camioneta",
-  //   category: "Motor y Chasis",
-  //   aspect: "square",
-  //   beforeImage: "/images/gallery/before-12.jpg",
-  //   afterImage: "/images/gallery/after-12.jpg",
-  // },
+/** Trabajos destacados para el inicio (1 por servicio, todos distintos). */
+export const HOME_WORKS = GALLERY_WORKS.filter((w) => w.home);
+
+// Categorías presentes (para los filtros), en orden, sin las vacías.
+const PRESENT = new Set(GALLERY_WORKS.map((w) => w.category));
+const ORDER: GalleryCategory[] = [
+  "Lavado",
+  "Abrillantado",
+  "Cerámico",
+  "Acrílico",
+  "Interior",
+  "Motor y Chasis",
 ];
 
 export const GALLERY_CATEGORIES = [
   "Todos",
-  "Lavado",
-  "Abrillantado",
-  "Interior",
-  "Acrílico",
-  "Cerámico",
-  "Motor y Chasis",
+  ...ORDER.filter((c) => PRESENT.has(c)),
 ] as const;
 
-export type GalleryCategory = typeof GALLERY_CATEGORIES[number];
+export type GalleryFilter = "Todos" | GalleryCategory;
