@@ -1,10 +1,13 @@
 // ============================================================
 //  GALERÍA — modelo por trabajo (multi-ángulo)
 //  Cada trabajo es UNA tarjeta con uno o varios ángulos.
-//  El PRIMER ángulo es la cara de la tarjeta → siempre la mejor foto.
+//  El PRIMER ángulo es la cara de la tarjeta → siempre la mejor foto
+//  del resultado; los pares antes/después van inmediatamente después.
 //  Un ángulo con `beforeImage` muestra Antes/Después (click alterna).
-//  El antes/después se usa SOLO donde el "antes" es real y notorio
-//  (ruedas embarradas). El resto son galerías de fotos.
+//  FORMATO OBJETIVO (definido por Nico, jul 2026): cada trabajo con
+//  2 pares antes/después (rueda + carrocería) + extras opcionales en
+//  /galeria. Los "antes" que faltan se completan con fotos nuevas del
+//  taller — NUNCA adivinar qué foto es qué (lo etiqueta Nico/el primo).
 //  `home: true` → aparece en la galería del inicio (1 por servicio).
 // ============================================================
 
@@ -36,39 +39,45 @@ const G = "/images/gallery";
 export const GALLERY_WORKS: GalleryWork[] = [
   // ─────────── INICIO: 1 trabajo por servicio (todos distintos) ───────────
 
-  // Lavado detallado → MOTO (galería, sin antes real)
+  // Lavado detallado → MOTO (cara: la moto entera; par de rueda después)
   {
     id: "lavado-moto",
     service: "Lavado detallado",
     category: "Lavado",
     home: true,
     angles: [
+      { label: "Lateral", afterImage: `${G}/hero-2-bmw.webp` },
       {
         label: "Rueda trasera",
         beforeImage: `${G}/moto-bmw-rueda-antes.webp`,
         afterImage: `${G}/moto-bmw-rueda-despues.webp`,
       },
-      { label: "Lateral", afterImage: `${G}/hero-2-bmw.webp` },
       { label: "Frente", afterImage: `${G}/moto-bmw-frente.webp` },
       { label: "Detalle", afterImage: `${G}/moto-bmw-detalle.webp` },
     ],
   },
 
-  // Tratamiento cerámico → MERCEDES (galería)
+  // Tratamiento cerámico → MERCEDES
+  // Par real de carrocería: encintado pre-cerámico → terminado.
+  // Pendiente: par "Rueda y bajos" (el antes es auto-mercedes-bajos.webp;
+  // falta el después — Nico tiene la foto de la rueda limpia mojada).
   {
     id: "ceramico-mercedes",
     service: "Tratamiento cerámico",
     category: "Cerámico",
     home: true,
     angles: [
+      {
+        label: "Carrocería",
+        beforeImage: `${G}/auto-mercedes-frente-antes.webp`,
+        afterImage: `${G}/auto-mercedes-frente.webp`,
+      },
       { label: "Trasera", afterImage: `${G}/auto-mercedes-carroceria-despues.webp` },
-      { label: "Frente", afterImage: `${G}/auto-mercedes-frente.webp` },
       { label: "Detalle", afterImage: `${G}/auto-mercedes-detalle.webp` },
-      { label: "Bajos", afterImage: `${G}/auto-mercedes-bajos.webp` },
     ],
   },
 
-  // Abrillantado → SONIC (galería)
+  // Abrillantado → SONIC (par real: llanta restaurada antes/después)
   {
     id: "abrillantado-sonic",
     service: "Abrillantado y realce de pintura",
@@ -76,6 +85,11 @@ export const GALLERY_WORKS: GalleryWork[] = [
     home: true,
     angles: [
       { label: "Exterior", afterImage: `${G}/auto-sonic-exterior.webp` },
+      {
+        label: "Llanta",
+        beforeImage: `${G}/auto-sonic-rueda-antes.webp`,
+        afterImage: `${G}/auto-sonic-rueda-despues.webp`,
+      },
       { label: "Perfil", afterImage: `${G}/auto-sonic-perfil.webp` },
     ],
   },
@@ -123,12 +137,12 @@ export const GALLERY_WORKS: GalleryWork[] = [
     category: "Lavado",
     home: false,
     angles: [
+      { label: "Exterior", afterImage: `${G}/hero-1-amarok.webp` },
       {
         label: "Ruedas",
         beforeImage: `${G}/camioneta-amarok-gris-rueda-antes.webp`,
         afterImage: `${G}/camioneta-amarok-gris-rueda-despues.webp`,
       },
-      { label: "Exterior", afterImage: `${G}/hero-1-amarok.webp` },
       { label: "Interior", afterImage: `${G}/camioneta-amarok-gris-interior.webp` },
     ],
   },
@@ -139,31 +153,36 @@ export const GALLERY_WORKS: GalleryWork[] = [
     category: "Lavado",
     home: false,
     angles: [
+      { label: "Exterior", afterImage: `${G}/camioneta-amarok-champagne-exterior.webp` },
       {
         label: "Ruedas",
         beforeImage: `${G}/camioneta-amarok-champagne-rueda-antes.webp`,
         afterImage: `${G}/camioneta-amarok-champagne-rueda-despues.webp`,
       },
-      { label: "Exterior", afterImage: `${G}/camioneta-amarok-champagne-exterior.webp` },
       { label: "Frente", afterImage: `${G}/camioneta-amarok-champagne-frente.webp` },
       { label: "Perfil", afterImage: `${G}/camioneta-amarok-champagne-perfil.webp` },
     ],
   },
 
+  // Amarok blanca: DOS pares reales (ruedas + portón embarrado → impecable)
   {
     id: "lavado-amarok-blanca",
     service: "Lavado detallado",
     category: "Lavado",
     home: false,
     angles: [
+      { label: "Frente", afterImage: `${G}/camioneta-amarok-blanca-frente.webp` },
       {
         label: "Ruedas",
         beforeImage: `${G}/camioneta-amarok-blanca-rueda-antes.webp`,
         afterImage: `${G}/camioneta-amarok-blanca-rueda-despues.webp`,
       },
-      { label: "Frente", afterImage: `${G}/camioneta-amarok-blanca-frente.webp` },
+      {
+        label: "Portón",
+        beforeImage: `${G}/camioneta-amarok-blanca-porton-antes.webp`,
+        afterImage: `${G}/camioneta-amarok-blanca-porton.webp`,
+      },
       { label: "Exterior", afterImage: `${G}/camioneta-amarok-blanca-exterior.webp` },
-      { label: "Portón", afterImage: `${G}/camioneta-amarok-blanca-porton.webp` },
     ],
   },
 ];

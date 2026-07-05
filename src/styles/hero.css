@@ -100,8 +100,13 @@
 /* En escritorio la foto es una COLUMNA real del layout: texto a la izquierda,
    panel de foto a la derecha, alineados por flex (sin superposiciones). */
 @media (min-width: 1024px) {
+  /* Fondo de ambiente: la misma foto, muy desenfocada y oscurecida, para que
+     el hero de PC no quede en negro. El blur tapa la baja resolución y el
+     recorte; cuando lleguen fotos nítidas horizontales pasa a full-bleed real. */
   .hero__media--bleed {
-    display: none;
+    display: block;
+    filter: blur(34px) brightness(0.32) saturate(1.05);
+    transform: scale(1.18);
   }
 
   .hero__content {
@@ -131,13 +136,22 @@
     object-position: center;
   }
 
-  /* Texto sobre fondo oscuro: scrim suave, no sobre la foto. */
+  /* Sobre el fondo de ambiente desenfocado: oscurecer el lado del texto para
+     que se lea siempre, dejando respirar un poco la foto hacia la derecha. */
   .hero__bg-base {
-    background: radial-gradient(
-      ellipse 90% 70% at 25% 40%,
-      rgba(20, 20, 20, 0.55) 0%,
-      transparent 70%
-    );
+    background:
+      linear-gradient(
+        90deg,
+        rgba(5, 5, 5, 0.9) 0%,
+        rgba(5, 5, 5, 0.72) 42%,
+        rgba(5, 5, 5, 0.5) 72%,
+        rgba(5, 5, 5, 0.62) 100%
+      ),
+      radial-gradient(
+        ellipse 90% 70% at 25% 40%,
+        rgba(10, 10, 10, 0.5) 0%,
+        transparent 70%
+      );
   }
 }
 
