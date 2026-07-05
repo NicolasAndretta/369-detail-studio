@@ -1,0 +1,84 @@
+/* ============================================================
+   NUESTRO ESPACIO (El taller)
+   ============================================================ */
+
+.espacio {
+  position: relative;
+  overflow: hidden;
+}
+
+.espacio__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 60% 55% at 85% 15%,
+    rgba(163, 255, 60, 0.025) 0%,
+    transparent 65%
+  );
+}
+
+.espacio__grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: var(--space-md);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .espacio__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+  }
+}
+
+.espacio__item {
+  position: relative;
+  margin: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-primary);
+  background: var(--background-secondary);
+  aspect-ratio: 4 / 3;
+  transition: border-color var(--transition-base), transform var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.espacio__item:hover {
+  border-color: rgba(163, 255, 60, 0.18);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+
+.espacio__item picture {
+  display: contents;
+}
+
+.espacio__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.espacio__item:hover .espacio__img {
+  transform: scale(1.04);
+}
+
+.espacio__caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: var(--space-lg) var(--space-md) var(--space-md);
+  background: linear-gradient(to top, rgba(5, 5, 5, 0.9) 0%, transparent 100%);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+}

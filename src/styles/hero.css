@@ -18,6 +18,36 @@
 
 /* ── Background layers ── */
 
+/* Slideshow rotativo (capa más baja) */
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: var(--background-primary);
+}
+
+.hero__media picture {
+  display: contents;
+}
+
+.hero__media-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out;
+  will-change: opacity;
+}
+
+.hero__media-img--active {
+  opacity: 1;
+}
+
 .hero__bg {
   position: absolute;
   inset: 0;
@@ -25,15 +55,104 @@
   pointer-events: none;
 }
 
+/* Scrim de legibilidad sobre la foto: oscuro a la izquierda/abajo,
+   más claro a la derecha para que el vehículo respire. */
 .hero__bg-base {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(
-      ellipse 80% 60% at 50% 0%,
-      rgba(20, 20, 20, 0.9) 0%,
-      var(--background-primary) 70%
+    linear-gradient(
+      180deg,
+      rgba(5, 5, 5, 0.6) 0%,
+      rgba(5, 5, 5, 0) 22%,
+      rgba(5, 5, 5, 0) 58%,
+      rgba(5, 5, 5, 0.88) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(5, 5, 5, 0.94) 0%,
+      rgba(5, 5, 5, 0.8) 42%,
+      rgba(5, 5, 5, 0.55) 78%,
+      rgba(5, 5, 5, 0.62) 100%
     );
+}
+
+/* En pantallas angostas (mobile/tablet) la foto va full-bleed detrás del texto:
+   oscurecer parejo para que se lea. */
+@media (max-width: 1023px) {
+  .hero__bg-base {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(5, 5, 5, 0.6) 0%,
+        rgba(5, 5, 5, 0.35) 30%,
+        rgba(5, 5, 5, 0.55) 65%,
+        rgba(5, 5, 5, 0.9) 100%
+      );
+  }
+}
+
+/* El panel de foto no existe en mobile (ahí va full-bleed detrás del texto). */
+.hero__panel {
+  display: none;
+}
+
+/* En escritorio la foto es una COLUMNA real del layout: texto a la izquierda,
+   panel de foto a la derecha, alineados por flex (sin superposiciones). */
+@media (min-width: 1024px) {
+  /* Fondo de ambiente: la misma foto, muy desenfocada y oscurecida, para que
+     el hero de PC no quede en negro. El blur tapa la baja resolución y el
+     recorte; cuando lleguen fotos nítidas horizontales pasa a full-bleed real. */
+  .hero__media--bleed {
+    display: block;
+    filter: blur(34px) brightness(0.32) saturate(1.05);
+    transform: scale(1.18);
+  }
+
+  .hero__content {
+    align-items: center;
+  }
+
+  .hero__body {
+    max-width: min(56%, 660px);
+  }
+
+  .hero__panel {
+    display: block;
+    position: relative;
+    flex-shrink: 0;
+    align-self: center;
+    height: min(62vh, 600px);
+    aspect-ratio: 3 / 4;
+    max-width: 38vw;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+    background: var(--background-secondary);
+  }
+
+  .hero__media--panel .hero__media-img {
+    object-position: center;
+  }
+
+  /* Sobre el fondo de ambiente desenfocado: oscurecer el lado del texto para
+     que se lea siempre, dejando respirar un poco la foto hacia la derecha. */
+  .hero__bg-base {
+    background:
+      linear-gradient(
+        90deg,
+        rgba(5, 5, 5, 0.9) 0%,
+        rgba(5, 5, 5, 0.72) 42%,
+        rgba(5, 5, 5, 0.5) 72%,
+        rgba(5, 5, 5, 0.62) 100%
+      ),
+      radial-gradient(
+        ellipse 90% 70% at 25% 40%,
+        rgba(10, 10, 10, 0.5) 0%,
+        transparent 70%
+      );
+  }
 }
 
 .hero__bg-light--top {
@@ -432,11 +551,8 @@
   padding-bottom: 4px;
 }
 
-@media (min-width: 1200px) {
-  .hero__side-label {
-    display: block;
-  }
-}
+/* La etiqueta vertical queda oculta en todos los tamaños:
+   en desktop ese lateral lo ocupa el panel de foto del hero. */
 
 /* ── Scroll indicator ── */
 
@@ -458,7 +574,7 @@
   padding-top: 6px;
 }
 
-@media (max-width: 768px) or (max-height: 720px) {
+@media (max-width: 768px) or (max-height: 899px) {
   .hero__scroll-indicator {
     display: none;
   }
