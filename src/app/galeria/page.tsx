@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { GalleryPageClient } from "./_components/gallery-page-client";
+import { categoriesOf, getGalleryWorks } from "@/lib/galeria";
 
 export const metadata: Metadata = {
   title: "Galería de Trabajos",
@@ -24,6 +25,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function GalleryPage() {
-  return <GalleryPageClient />;
+export const revalidate = 60;
+
+export default async function GalleryPage() {
+  const works = await getGalleryWorks();
+  return (
+    <GalleryPageClient works={works} categories={categoriesOf(works)} />
+  );
 }

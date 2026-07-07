@@ -7,15 +7,21 @@ import { Footer } from "@/components/layout/footer";
 import { WhatsAppSticky } from "@/components/ui/whatsapp-sticky";
 import { GalleryCard } from "@/sections/gallery";
 import { ReelsSection } from "@/sections/reels";
-import { GALLERY_WORKS, GALLERY_CATEGORIES, type GalleryFilter } from "@/data/gallery-data";
+import type { GalleryFilter, GalleryWork } from "@/data/gallery-data";
 
-export function GalleryPageClient() {
+export function GalleryPageClient({
+  works,
+  categories,
+}: {
+  works: GalleryWork[];
+  categories: GalleryFilter[];
+}) {
   const [activeCategory, setActiveCategory] = useState<GalleryFilter>("Todos");
 
   const filtered =
     activeCategory === "Todos"
-      ? GALLERY_WORKS
-      : GALLERY_WORKS.filter((w) => w.category === activeCategory);
+      ? works
+      : works.filter((w) => w.category === activeCategory);
 
   return (
     <>
@@ -42,7 +48,7 @@ export function GalleryPageClient() {
           </div>
 
           <div className="gallery-filters" role="group" aria-label="Filtrar por categoría">
-            {GALLERY_CATEGORIES.map((cat) => (
+            {categories.map((cat) => (
               <button
                 key={cat}
                 className={`gallery-filter__btn ${activeCategory === cat ? "gallery-filter__btn--active" : ""}`}

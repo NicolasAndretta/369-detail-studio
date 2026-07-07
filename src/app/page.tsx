@@ -8,8 +8,16 @@ import { SHOW_NUESTRO_ESPACIO } from "@/config/features";
 import { ContactSection } from "@/sections/contact";
 import { Footer } from "@/components/layout/footer";
 import { WhatsAppSticky } from "@/components/ui/whatsapp-sticky";
+import { getGalleryWorks } from "@/lib/galeria";
 
-export default function HomePage() {
+// La galería viene de la base (panel /admin); si no está configurada,
+// cae a los datos estáticos. Se refresca al guardar desde el panel.
+export const revalidate = 60;
+
+export default async function HomePage() {
+  const works = await getGalleryWorks();
+  const homeWorks = works.filter((w) => w.home);
+
   return (
     <>
       <Navbar />
@@ -17,7 +25,7 @@ export default function HomePage() {
         <HeroSection />
         <OrderStatusSection />
         <ServicesSection />
-        <GallerySection />
+        <GallerySection works={homeWorks} />
         {SHOW_NUESTRO_ESPACIO && <NuestroEspacioSection />}
         <ContactSection />
       </main>

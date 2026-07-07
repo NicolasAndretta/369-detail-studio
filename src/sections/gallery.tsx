@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { motion, useInView, type Variants } from "framer-motion";
-import { type GalleryWork, HOME_WORKS } from "@/data/gallery-data";
+import type { GalleryWork } from "@/data/gallery-data";
 
 // ─── Animation variants ───────────────────────────────────────────────────────
 
@@ -211,7 +211,7 @@ export function GalleryCard({ work }: { work: GalleryWork }) {
 
 // ─── Main section ──────────────────────────────────────────────────────────────
 
-export function GallerySection() {
+export function GallerySection({ works }: { works: GalleryWork[] }) {
   const sectionRef = useRef<HTMLElement>(null);
 
   const isInView = useInView(sectionRef, {
@@ -260,7 +260,7 @@ export function GallerySection() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          {HOME_WORKS.map((work) => (
+          {works.map((work) => (
             <GalleryCard key={work.id} work={work} />
           ))}
         </motion.div>
