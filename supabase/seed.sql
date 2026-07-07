@@ -23,10 +23,11 @@ insert into fotos (trabajo_id, etiqueta, antes_url, despues_url, orden) values
   ('11111111-1111-4111-8111-111111111101', 'Frente',         null,                                              '/images/gallery/moto-bmw-frente.webp',                      3),
   ('11111111-1111-4111-8111-111111111101', 'Detalle',        null,                                              '/images/gallery/moto-bmw-detalle.webp',                     4),
 
-  -- Mercedes (cerámico)
-  ('11111111-1111-4111-8111-111111111102', 'Carrocería',     '/images/gallery/auto-mercedes-frente-antes.webp', '/images/gallery/auto-mercedes-frente.webp',                 1),
-  ('11111111-1111-4111-8111-111111111102', 'Trasera',        null,                                              '/images/gallery/auto-mercedes-carroceria-despues.webp',     2),
-  ('11111111-1111-4111-8111-111111111102', 'Detalle',        null,                                              '/images/gallery/auto-mercedes-detalle.webp',                3),
+  -- Mercedes (cerámico) — 2 pares antes/después
+  ('11111111-1111-4111-8111-111111111102', 'Carrocería',     '/images/gallery/auto-mercedes-carroceria-antes.webp', '/images/gallery/auto-mercedes-frente.webp',             1),
+  ('11111111-1111-4111-8111-111111111102', 'Rueda y bajos',  '/images/gallery/auto-mercedes-bajos.webp',        '/images/gallery/auto-mercedes-bajos-despues.webp',          2),
+  ('11111111-1111-4111-8111-111111111102', 'Trasera',        null,                                              '/images/gallery/auto-mercedes-carroceria-despues.webp',     3),
+  ('11111111-1111-4111-8111-111111111102', 'Detalle',        null,                                              '/images/gallery/auto-mercedes-detalle.webp',                4),
 
   -- Sonic (abrillantado)
   ('11111111-1111-4111-8111-111111111103', 'Exterior',       null,                                              '/images/gallery/auto-sonic-exterior.webp',                  1),
@@ -40,8 +41,8 @@ insert into fotos (trabajo_id, etiqueta, antes_url, despues_url, orden) values
   ('11111111-1111-4111-8111-111111111105', 'Butacas y tablero', null,                                           '/images/gallery/camioneta-amarok-gris-interior.webp',       1),
   ('11111111-1111-4111-8111-111111111105', 'Detalle',        null,                                              '/images/gallery/camioneta-amarok-gris-interior-2.webp',     2),
 
-  -- Berlingo (acrílico)
-  ('11111111-1111-4111-8111-111111111106', 'Exterior',       null,                                              '/images/gallery/auto-berlingo-exterior.webp',               1),
+  -- Berlingo (acrílico) — par real: llegó sucia → terminada
+  ('11111111-1111-4111-8111-111111111106', 'Exterior',       '/images/gallery/auto-berlingo-exterior-antes.webp', '/images/gallery/auto-berlingo-exterior.webp',             1),
 
   -- Amarok gris (lavado)
   ('11111111-1111-4111-8111-111111111107', 'Exterior',       null,                                              '/images/gallery/hero-1-amarok.webp',                        1),

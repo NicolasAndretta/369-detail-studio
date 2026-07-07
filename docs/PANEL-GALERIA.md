@@ -10,13 +10,25 @@ de servidor (nada llega al navegador) y una clave compartida para entrar.
 
 ---
 
-## 1. Crear el proyecto en Supabase (una sola vez, ~5 min)
+## 1. Proyecto en Supabase (una sola vez, ~5 min)
 
-1. Entrar a [supabase.com](https://supabase.com) → iniciar sesión (misma cuenta
-   que usás para Finos está bien).
-2. **New project** → nombre `369-detail` → región **South America (São Paulo)**
-   → generar contraseña de base (guardarla en tu gestor, no se vuelve a usar).
-3. Esperar ~1 min a que el proyecto levante.
+> ⚠️ El plan gratis permite **2 proyectos activos por organización**. Si la cuenta
+> ya está en el límite, hay dos salidas con $0:
+
+**Opción A — Nueva organización (la más limpia, probar primero):**
+1. En [supabase.com](https://supabase.com), arriba a la izquierda tocar el
+   selector de organización → **New organization** (plan Free) → nombre
+   `369 Detail`.
+2. Dentro de esa organización: **New project** → nombre `369-detail` → región
+   **South America (São Paulo)** → generar contraseña de base (guardarla).
+
+**Opción B — Compartir el proyecto de Finos (si la A no deja):**
+1. Abrir el proyecto de **Finos** en Supabase y listo — se usan sus claves.
+2. Las tablas del panel (`trabajos`, `fotos`) no chocan con las de Finos
+   (`profiles`, `servicios`, `barberos`, `turnos`) y quedan bloqueadas por RLS,
+   así que la app de Finos no puede tocarlas ni verlas.
+3. En el paso 3 de esta guía, usar la URL y el service_role **del proyecto de
+   Finos** en el `.env.local` de 369.
 
 ## 2. Crear tablas y cargar la galería actual
 

@@ -57,10 +57,12 @@ export const GALLERY_WORKS: GalleryWork[] = [
     ],
   },
 
-  // Tratamiento cerámico → MERCEDES
-  // Par real de carrocería: encintado pre-cerámico → terminado.
-  // Pendiente: par "Rueda y bajos" (el antes es auto-mercedes-bajos.webp;
-  // falta el después — Nico tiene la foto de la rueda limpia mojada).
+  // Tratamiento cerámico → MERCEDES — formato completo: 2 pares
+  // (antes/después elegidos por Nico; el encintado quedó fuera del par,
+  //  auto-mercedes-frente-antes.webp sigue disponible por si se quiere
+  //  sumar como ángulo "Proceso").
+  // ⚠ auto-mercedes-bajos-despues.webp vino de una captura (299px):
+  //   reemplazar cuando Nico baje la foto original de WhatsApp.
   {
     id: "ceramico-mercedes",
     service: "Tratamiento cerámico",
@@ -69,8 +71,13 @@ export const GALLERY_WORKS: GalleryWork[] = [
     angles: [
       {
         label: "Carrocería",
-        beforeImage: `${G}/auto-mercedes-frente-antes.webp`,
+        beforeImage: `${G}/auto-mercedes-carroceria-antes.webp`,
         afterImage: `${G}/auto-mercedes-frente.webp`,
+      },
+      {
+        label: "Rueda y bajos",
+        beforeImage: `${G}/auto-mercedes-bajos.webp`,
+        afterImage: `${G}/auto-mercedes-bajos-despues.webp`,
       },
       { label: "Trasera", afterImage: `${G}/auto-mercedes-carroceria-despues.webp` },
       { label: "Detalle", afterImage: `${G}/auto-mercedes-detalle.webp` },
@@ -117,14 +124,18 @@ export const GALLERY_WORKS: GalleryWork[] = [
     ],
   },
 
-  // Tratamiento acrílico → BERLINGO
+  // Tratamiento acrílico → BERLINGO (par real: llegó sucia → terminada)
   {
     id: "acrilico-berlingo",
     service: "Tratamiento acrílico",
     category: "Acrílico",
     home: true,
     angles: [
-      { label: "Exterior", afterImage: `${G}/auto-berlingo-exterior.webp` },
+      {
+        label: "Exterior",
+        beforeImage: `${G}/auto-berlingo-exterior-antes.webp`,
+        afterImage: `${G}/auto-berlingo-exterior.webp`,
+      },
     ],
   },
 
