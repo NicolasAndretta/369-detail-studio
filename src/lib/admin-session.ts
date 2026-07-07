@@ -1,5 +1,6 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 // ============================================================
 // Sesión del panel: clave compartida (ADMIN_PASSWORD) → cookie
@@ -10,9 +11,9 @@ export const SESSION_COOKIE = "admin_session_369";
 const SESSION_DAYS = 7;
 
 function getSecret(): string | null {
-  // Secreto propio o, si no está, derivado de la clave (alcanza para esto).
+  // Secreto propio o, si no está (o quedó vacío), derivado de la clave.
   return (
-    process.env.ADMIN_SESSION_SECRET ?? process.env.ADMIN_PASSWORD ?? null
+    process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD || null
   );
 }
 
@@ -61,6 +62,16 @@ export function isValidSessionToken(token: string | undefined): boolean {
 export async function isAdminAuthenticated(): Promise<boolean> {
   const store = await cookies();
   return isValidSessionToken(store.get(SESSION_COOKIE)?.value);
+}
+
+/**
+ * Guardia OBLIGATORIA en cada page server del panel (además del layout).
+ * En App Router el layout y la página se renderizan en paralelo: si el guard
+ * está solo en el layout, los datos de la página viajan igual en la respuesta
+ * aunque haya redirect. Con esto, la página no consulta nada sin sesión.
+ */
+export async function requireAdmin(): Promise<void> {
+  if (!(await isAdminAuthenticated())) redirect("/admin/login");
 }
 
 export const sessionCookieOptions = {

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
+import { requireAdmin } from "@/lib/admin-session";
 import { EditWork, type EditFoto } from "../_components/edit-work";
 
 export const dynamic = "force-dynamic";
@@ -9,6 +10,7 @@ export default async function EditarTrabajoPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await requireAdmin();
   const supabase = getSupabaseAdmin();
   if (!supabase) notFound();
 

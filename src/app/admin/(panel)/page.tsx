@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
+import { requireAdmin } from "@/lib/admin-session";
 import { WorkActions } from "./_components/work-actions";
 
 export const dynamic = "force-dynamic";
@@ -23,6 +24,7 @@ interface AdminTrabajo {
 }
 
 export default async function AdminHomePage() {
+  await requireAdmin();
   const supabase = getSupabaseAdmin();
 
   if (!supabase) {
