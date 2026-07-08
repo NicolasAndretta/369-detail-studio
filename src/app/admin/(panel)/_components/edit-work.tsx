@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { FotoInput } from "./foto-input";
 
 const SERVICIOS = [
   "Lavado detallado",
@@ -223,12 +224,10 @@ export function EditWork({
                     <span>Sin antes</span>
                   )}
                 </div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
+                <FotoInput
+                  hasFile={false}
+                  label={f.antes_url ? "Reemplazar antes" : "Subir antes"}
+                  onFile={(file) => {
                     const fd = new FormData();
                     fd.set("antes", file);
                     patchFoto(f.id, fd);
@@ -258,12 +257,10 @@ export function EditWork({
                 <div className="admin-photo-slot__preview">
                   <img src={f.despues_url} alt="" loading="lazy" />
                 </div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
+                <FotoInput
+                  hasFile={false}
+                  label="Reemplazar después"
+                  onFile={(file) => {
                     const fd = new FormData();
                     fd.set("despues", file);
                     patchFoto(f.id, fd);
@@ -305,20 +302,18 @@ export function EditWork({
         <div className="admin-angle__pair">
           <div className="admin-photo-slot">
             <span className="admin-photo-slot__label">Antes (opcional)</span>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setNuevoAntes(e.target.files?.[0] ?? null)}
+            <FotoInput
+              hasFile={!!nuevoAntes}
+              onFile={(file) => setNuevoAntes(file)}
             />
           </div>
           <div className="admin-photo-slot">
             <span className="admin-photo-slot__label admin-photo-slot__label--after">
               Después
             </span>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setNuevoDespues(e.target.files?.[0] ?? null)}
+            <FotoInput
+              hasFile={!!nuevoDespues}
+              onFile={(file) => setNuevoDespues(file)}
             />
           </div>
         </div>

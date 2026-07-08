@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { FotoInput } from "../_components/foto-input";
 
 const SERVICIOS = [
   "Lavado detallado",
@@ -181,12 +182,9 @@ export default function NuevoTrabajoPage() {
               <div className="admin-photo-slot">
                 <span className="admin-photo-slot__label">Antes (opcional)</span>
                 <Preview file={a.antes} hint="Sin foto de antes" />
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    setAngle(i, { antes: e.target.files?.[0] ?? null })
-                  }
+                <FotoInput
+                  hasFile={!!a.antes}
+                  onFile={(file) => setAngle(i, { antes: file })}
                 />
               </div>
               <div className="admin-photo-slot">
@@ -194,12 +192,9 @@ export default function NuevoTrabajoPage() {
                   Después
                 </span>
                 <Preview file={a.despues} hint="Elegí la foto terminada" />
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    setAngle(i, { despues: e.target.files?.[0] ?? null })
-                  }
+                <FotoInput
+                  hasFile={!!a.despues}
+                  onFile={(file) => setAngle(i, { despues: file })}
                 />
               </div>
             </div>
