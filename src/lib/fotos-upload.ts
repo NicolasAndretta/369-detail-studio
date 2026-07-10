@@ -28,15 +28,22 @@ export async function processAndUploadPhoto(
 
   const input = Buffer.from(await file.arrayBuffer());
 
-  const base = sharp(input).rotate().resize(MAX_EDGE, MAX_EDGE, {
-    fit: "inside",
-    withoutEnlargement: true,
-  });
+  // Un pipeline nuevo por formato + `sequentialRead`: procesa un encode a la
+  // vez para no duplicar el pico de memoria con fotos grandes de celular.
+  const pipeline = () =>
+    sharp(input, { sequentialRead: true }).rotate().resize(MAX_EDGE, MAX_EDGE, {
+      fit: "inside",
+      withoutEnlargement: true,
+    });
 
-  const [webp, avif] = await Promise.all([
-    base.clone().webp({ quality: 82 }).toBuffer().then(unshare),
-    base.clone().avif({ quality: 60 }).toBuffer().then(unshare),
-  ]);
+  // `effort: 0` es CLAVE: en Hostinger sharp corre en WebAssembly (un solo
+  // núcleo) y el effort AVIF por defecto (4) tarda ~90s por foto → la subida
+  // se corta por timeout. Con effort 0 baja a ~1s y el archivo queda igual o
+  // más chico. El WebP es el formato principal; el AVIF es el hermano opcional.
+  const webp = unshare(await pipeline().webp({ quality: 82 }).toBuffer());
+  const avif = unshare(
+    await pipeline().avif({ quality: 60, effort: 0 }).toBuffer()
+  );
 
   const name = randomUUID();
   const dir = `trabajos/${trabajoId}`;

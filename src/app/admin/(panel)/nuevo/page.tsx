@@ -98,13 +98,18 @@ export default function NuevoTrabajoPage() {
       const res = await fetch("/api/admin/trabajos", { method: "POST", body: fd });
       const j = await res.json().catch(() => null);
       if (!res.ok) {
-        setError(j?.error ?? "No se pudo crear el trabajo.");
+        setError(
+          j?.error ??
+            "No se pudo guardar. Puede ser la señal o alguna foto muy pesada — probá de nuevo con buena conexión."
+        );
         return;
       }
       router.push("/admin");
       router.refresh();
     } catch {
-      setError("Error de conexión. Probá de nuevo.");
+      setError(
+        "Se cortó la subida. Revisá la señal y probá de nuevo (si son muchas fotos, cargá menos por vez)."
+      );
     } finally {
       setBusy(false);
     }
