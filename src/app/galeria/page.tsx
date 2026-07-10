@@ -25,7 +25,8 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 60;
+// Igual que la home: consulta en cada visita para reflejar el panel al instante.
+export const dynamic = "force-dynamic";
 
 export default async function GalleryPage() {
   const works = await getGalleryWorks();

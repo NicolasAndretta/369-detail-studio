@@ -11,8 +11,10 @@ import { WhatsAppSticky } from "@/components/ui/whatsapp-sticky";
 import { getGalleryWorks } from "@/lib/galeria";
 
 // La galería viene de la base (panel /admin); si no está configurada,
-// cae a los datos estáticos. Se refresca al guardar desde el panel.
-export const revalidate = 60;
+// cae a los datos estáticos. Se consulta en cada visita para que los
+// cambios del panel se vean al instante (sin copias viejas de
+// servidor/CDN/navegador).
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const works = await getGalleryWorks();
