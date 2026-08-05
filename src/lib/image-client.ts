@@ -40,13 +40,47 @@ function esHeic(file: File): boolean {
   );
 }
 
-/** Decodifica el archivo respetando la orientación EXIF de la cámara. */
+/**
+ * Decodifica el archivo respetando la orientación EXIF de la cámara.
+ *
+ * IMPORTANTE — por qué se pide el achique acá y no después:
+ * la cámara trasera de un celular moderno saca fotos de 48 MP o más.
+ * Decodificar eso completo son ~200 MB de RAM, y el navegador del celular
+ * se queda sin memoria: la pestaña muere y la subida aparece como
+ * "se cortó la conexión". Pasándole `resizeWidth`/`resizeHeight`, el
+ * navegador escala MIENTRAS decodifica y nunca llega a construir la
+ * imagen entera en memoria.
+ *
+ * Se prueba primero limitando el ancho; si la foto es vertical y quedó
+ * más alta que el máximo, se rehace limitando el alto. Son dos decodes
+ * baratos, no dos completos.
+ */
 async function decodificar(file: File): Promise<ImageBitmap | HTMLImageElement> {
   if (typeof createImageBitmap === "function") {
     try {
-      return await createImageBitmap(file, { imageOrientation: "from-image" });
+      let bmp = await createImageBitmap(file, {
+        imageOrientation: "from-image",
+        resizeWidth: LADO_MAX,
+        resizeQuality: "high",
+      });
+
+      // Vertical: el lado largo es el alto, así que hay que limitar por ahí.
+      if (bmp.height > LADO_MAX) {
+        bmp.close();
+        bmp = await createImageBitmap(file, {
+          imageOrientation: "from-image",
+          resizeHeight: LADO_MAX,
+          resizeQuality: "high",
+        });
+      }
+      return bmp;
     } catch {
-      // Sigue al plan B: algunos navegadores no soportan la opción.
+      // Plan B: sin las opciones de achique (navegador viejo).
+      try {
+        return await createImageBitmap(file, { imageOrientation: "from-image" });
+      } catch {
+        // Plan C abajo.
+      }
     }
   }
 
@@ -140,9 +174,20 @@ export async function prepararFoto(original: File): Promise<File> {
   ctx.drawImage(fuente, 0, 0, destinoW, destinoH);
   if (fuente instanceof ImageBitmap) fuente.close();
 
-  const blob = await new Promise<Blob | null>((resolve) =>
-    canvas.toBlob(resolve, "image/jpeg", CALIDAD)
-  );
+  const aBlob = (calidad: number) =>
+    new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/jpeg", calidad)
+    );
+
+  let blob = await aBlob(CALIDAD);
+
+  // Red de seguridad: si aun achicada sigue pesando (fotos con mucho
+  // detalle, como una textura o un motor lleno de piezas), se recomprime
+  // más fuerte. Vale más que entre a que se vea un 2% mejor.
+  if (blob && blob.size > 1.5 * 1024 * 1024) {
+    const masChica = await aBlob(0.7);
+    if (masChica && masChica.size < blob.size) blob = masChica;
+  }
 
   if (!blob) {
     throw new ImagenInvalida("No se pudo preparar la foto para subir.");
