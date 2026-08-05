@@ -106,15 +106,14 @@ interface VideoRow {
   orden: number;
 }
 
-/** Miniatura por defecto si todavía no cargaron una. */
-const THUMB_FALLBACK = "/images/branding/og-image.jpg";
-
 function rowToSlot(row: VideoRow): VideoSlot {
   return {
     id: row.id,
     title: row.titulo,
     category: row.categoria,
-    thumbnail: row.thumbnail_url || THUMB_FALLBACK,
+    // Sin portada no se inventa una: la tarjeta dibuja su propio
+    // placeholder, que queda mejor que una foto recortada al azar.
+    ...(row.thumbnail_url ? { thumbnail: row.thumbnail_url } : {}),
     ...(row.instagram_code
       ? { instagramUrl: urlInstagram(row.instagram_code) }
       : {}),

@@ -54,13 +54,22 @@ function VideoCard({ video, onClick }: VideoCardProps) {
       }}
     >
       <div className="reel-card__thumb">
-        <img
-          src={video.thumbnail}
-          alt={video.title}
-          className="reel-card__img"
-          loading="lazy"
-          decoding="async"
-        />
+        {video.thumbnail ? (
+          <img
+            src={video.thumbnail}
+            alt={video.title}
+            className="reel-card__img"
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          /* Sin portada cargada: placeholder propio. Antes se rellenaba con
+             la imagen de compartir en redes, que es horizontal, y la tarjeta
+             mostraba una franja del medio con el texto cortado. */
+          <div className="reel-card__placeholder" aria-hidden="true">
+            <span className="reel-card__placeholder-mark">369</span>
+          </div>
+        )}
         <div className="reel-card__overlay" aria-hidden="true" />
         <div className="reel-card__play" aria-hidden="true">
           <PlayIcon />

@@ -2,7 +2,14 @@ export interface VideoSlot {
   id: string;
   title: string;
   category: string;
-  thumbnail: string;
+  /**
+   * Portada de la tarjeta. Opcional: si no hay, la tarjeta dibuja un
+   * placeholder propio. NO se rellena con la imagen de compartir en redes
+   * (`og-image.jpg`): esa es horizontal 1200×630 y la tarjeta es vertical
+   * 9:16, así que quedaba recortada una franja del medio con el texto
+   * cortado a la mitad.
+   */
+  thumbnail?: string;
   instagramUrl?: string;
   tiktokUrl?: string;
 }
@@ -12,7 +19,8 @@ export const VIDEO_SLOTS: VideoSlot[] = [
     id: "video-1",
     title: "Corrección de pintura paso a paso",
     category: "Pulido",
-    thumbnail: "/images/branding/og-image.jpg",
+    // Sin `thumbnail` a propósito: la tarjeta dibuja el placeholder de la
+    // casa. Los videos reales se cargan desde /admin/videos con su portada.
     instagramUrl: "https://www.instagram.com/p/C0fC_CXvW21/",
   },
 

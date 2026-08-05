@@ -58,6 +58,18 @@ export function VideosManager({
       setError("Pegá al menos un link: de Instagram o de TikTok.");
       return;
     }
+    // La portada es lo único que se ve antes de que alguien toque la
+    // tarjeta. Sin ella queda un cuadro oscuro con el logo: funciona,
+    // pero vende mucho menos que una foto del trabajo.
+    if (
+      !thumbnail &&
+      !confirm(
+        "Este video va sin portada, así que en la galería se va a ver un cuadro oscuro con el logo.\n\n" +
+          "Una foto del trabajo llama mucho más. ¿Guardar igual?"
+      )
+    ) {
+      return;
+    }
 
     const fd = new FormData();
     fd.set("titulo", titulo.trim());
