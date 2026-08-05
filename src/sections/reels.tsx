@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { type VideoSlot, VIDEO_SLOTS } from "@/data/video-data";
+import { type VideoSlot } from "@/data/video-data";
 
 const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -208,7 +208,12 @@ function VideoModal({ video, onClose }: VideoModalProps) {
   );
 }
 
-export function ReelsSection() {
+/**
+ * Los videos llegan por props desde el servidor (los carga el panel /admin).
+ * Si no hay ninguno, la sección no se dibuja: mejor que mostrar una grilla
+ * vacía con el título "El proceso, en video".
+ */
+export function ReelsSection({ videos }: { videos: VideoSlot[] }) {
   const [activeVideo, setActiveVideo] = useState<VideoSlot | null>(null);
 
   const openModal = useCallback((video: VideoSlot) => {
@@ -220,6 +225,14 @@ export function ReelsSection() {
     setActiveVideo(null);
     document.body.style.overflow = "";
   }, []);
+
+  // Si el modal queda abierto al desmontar, el scroll del body se quedaría
+  // bloqueado para siempre.
+  useEffect(() => () => {
+    document.body.style.overflow = "";
+  }, []);
+
+  if (videos.length === 0) return null;
 
   return (
     <section className="reels section-spacing" aria-label="Videos del taller">
@@ -249,7 +262,7 @@ export function ReelsSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
         >
-          {VIDEO_SLOTS.map((video) => (
+          {videos.map((video) => (
             <VideoCard key={video.id} video={video} onClick={openModal} />
           ))}
         </motion.div>

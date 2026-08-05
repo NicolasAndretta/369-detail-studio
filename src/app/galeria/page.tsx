@@ -1,16 +1,20 @@
 import type { Metadata } from "next";
 import { GalleryPageClient } from "./_components/gallery-page-client";
 import { categoriesOf, getGalleryWorks } from "@/lib/galeria";
+import { getVideos } from "@/lib/videos";
+import { absoluteUrl } from "@/lib/site";
+import { breadcrumbSchema, gallerySchema, jsonLd } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Galería de Trabajos",
+  title: "Galería de Trabajos — Antes y Después",
   description:
-    "Resultados reales de corrección de pintura, tratamientos cerámicos y detailing en Lugano, Buenos Aires. Antes y después de cada vehículo.",
+    "Antes y después reales de pulido, corrección de pintura, tratamiento cerámico y lavado de motor. Trabajos hechos en el taller de Lugano, Buenos Aires.",
   openGraph: {
-    title: "Galería | 369 Detail — Detailing Automotriz en Lugano",
+    title: "Galería de Trabajos | 369 Detail — Detailing en Lugano",
     description:
-      "Resultados reales de corrección de pintura, tratamientos cerámicos y detailing en Lugano, Buenos Aires.",
-    url: "https://369detail.com.ar/galeria",
+      "Antes y después reales de pulido, tratamiento cerámico y detailing en Lugano, Buenos Aires.",
+    url: absoluteUrl("/galeria"),
+    type: "website",
     images: [
       {
         url: "/images/branding/og-image.jpg",
@@ -21,15 +25,38 @@ export const metadata: Metadata = {
     ],
   },
   alternates: {
-    canonical: "https://369detail.com.ar/galeria",
+    canonical: absoluteUrl("/galeria"),
   },
 };
 
 export const revalidate = 60;
 
 export default async function GalleryPage() {
-  const works = await getGalleryWorks();
+  // En paralelo: la galería y los reels no dependen entre sí.
+  const [works, videos] = await Promise.all([getGalleryWorks(), getVideos()]);
+
   return (
-    <GalleryPageClient works={works} categories={categoriesOf(works)} />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(
+            breadcrumbSchema([
+              { nombre: "Inicio", path: "/" },
+              { nombre: "Galería de trabajos", path: "/galeria" },
+            ])
+          ),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(gallerySchema(works)) }}
+      />
+      <GalleryPageClient
+        works={works}
+        categories={categoriesOf(works)}
+        videos={videos}
+      />
+    </>
   );
 }

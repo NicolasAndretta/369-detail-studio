@@ -23,6 +23,9 @@ export default async function AdminLayout({
           369 <span>PANEL</span>
         </Link>
         <nav className="admin-header__nav">
+          <Link href="/admin/videos" className="abtn">
+            Videos
+          </Link>
           <Link href="/admin/nuevo" className="abtn abtn--primary">
             + Nuevo trabajo
           </Link>

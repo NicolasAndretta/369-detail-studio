@@ -8,13 +8,16 @@ import { WhatsAppSticky } from "@/components/ui/whatsapp-sticky";
 import { GalleryCard } from "@/sections/gallery";
 import { ReelsSection } from "@/sections/reels";
 import type { GalleryFilter, GalleryWork } from "@/data/gallery-data";
+import type { VideoSlot } from "@/data/video-data";
 
 export function GalleryPageClient({
   works,
   categories,
+  videos,
 }: {
   works: GalleryWork[];
   categories: GalleryFilter[];
+  videos: VideoSlot[];
 }) {
   const [activeCategory, setActiveCategory] = useState<GalleryFilter>("Todos");
 
@@ -86,7 +89,7 @@ export function GalleryPageClient({
           </div>
         </div>
 
-        <ReelsSection />
+        <ReelsSection videos={videos} />
       </main>
 
       <Footer />

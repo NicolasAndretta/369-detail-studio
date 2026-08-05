@@ -4,7 +4,7 @@ import { OrderStatusSection } from "@/sections/order-status";
 import { ServicesSection } from "@/sections/services";
 import { GallerySection } from "@/sections/gallery";
 import { NuestroEspacioSection } from "@/sections/nuestro-espacio";
-import { SHOW_NUESTRO_ESPACIO } from "@/config/features";
+import { SHOW_NUESTRO_ESPACIO, SHOW_ORDER_STATUS } from "@/config/features";
 import { ContactSection } from "@/sections/contact";
 import { Footer } from "@/components/layout/footer";
 import { WhatsAppSticky } from "@/components/ui/whatsapp-sticky";
@@ -23,7 +23,7 @@ export default async function HomePage() {
       <Navbar />
       <main>
         <HeroSection />
-        <OrderStatusSection />
+        {SHOW_ORDER_STATUS && <OrderStatusSection />}
         <ServicesSection />
         <GallerySection works={homeWorks} />
         {SHOW_NUESTRO_ESPACIO && <NuestroEspacioSection />}
