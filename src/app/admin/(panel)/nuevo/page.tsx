@@ -39,6 +39,13 @@ const DEFAULT_ANGLES: AngleDraft[] = [
  * cargada quedaba revocada y las miniaturas parpadeaban o desaparecían.
  * Ahora la URL se crea una sola vez por archivo y se libera al cambiarlo.
  */
+/** "412 KB" / "8,4 MB" — para que se vea de un vistazo si el achique corrió. */
+function pesoLegible(bytes: number): string {
+  return bytes < 1024 * 1024
+    ? `${Math.round(bytes / 1024)} KB`
+    : `${(bytes / 1024 / 1024).toFixed(1).replace(".", ",")} MB`;
+}
+
 function Preview({ file, hint }: { file: File | null; hint: string }) {
   // La URL se calcula una sola vez por archivo, y el efecto solo se ocupa
   // de liberarla cuando cambia la foto o se desmonta la tarjeta.
@@ -50,9 +57,24 @@ function Preview({ file, hint }: { file: File | null; hint: string }) {
   }, [url]);
 
   return (
-    <div className="admin-photo-slot__preview">
-      {url ? <img src={url} alt="" /> : <span>{hint}</span>}
-    </div>
+    <>
+      <div className="admin-photo-slot__preview">
+        {url ? <img src={url} alt="" /> : <span>{hint}</span>}
+      </div>
+      {/* El peso a la vista: si dice más de 1 MB, el achique del celular no
+          corrió y la subida va a sufrir. Es el dato que hace falta para
+          saber si un problema de carga es de la foto o de la conexión. */}
+      {file && (
+        <span
+          className={`admin-photo-slot__peso ${
+            file.size > 1024 * 1024 ? "admin-photo-slot__peso--pesada" : ""
+          }`}
+        >
+          {pesoLegible(file.size)}
+          {file.size > 1024 * 1024 && " ⚠ no se pudo achicar"}
+        </span>
+      )}
+    </>
   );
 }
 

@@ -506,3 +506,16 @@
     font-size: 0.75rem;
   }
 }
+
+/* Peso de la foto elegida, debajo de la miniatura */
+.admin-photo-slot__peso {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+/* Si supera 1 MB, el achique del celular no corrió: hay que verlo */
+.admin-photo-slot__peso--pesada {
+  color: #ffb454;
+}
