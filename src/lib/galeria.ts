@@ -62,6 +62,7 @@ function rowToWork(row: TrabajoRow): GalleryWork {
     service: row.servicio,
     category: toCategory(row.categoria),
     home: row.en_inicio,
+    vehicle: row.vehiculo?.trim() || undefined,
     angles: [...row.fotos]
       .sort((a, b) => a.orden - b.orden)
       .map((f) => ({
@@ -94,6 +95,30 @@ export async function getGalleryWorks(): Promise<GalleryWork[]> {
     return works.length > 0 ? works : GALLERY_WORKS;
   } catch {
     return GALLERY_WORKS;
+  }
+}
+
+/**
+ * Fecha del último trabajo cargado, para el `lastmod` del sitemap.
+ * Poner `new Date()` ahí sería mentirle a Google todos los días: si el
+ * sitemap dice "cambió" y no cambió nada, deja de confiar en el dato y
+ * te rastrea menos seguido. Si no hay base, cae a la fecha del build.
+ */
+export async function getGalleryLastModified(): Promise<Date> {
+  const supabase = getSupabaseAdmin();
+  if (!supabase) return new Date();
+
+  try {
+    const { data } = await supabase
+      .from("trabajos")
+      .select("creado_en")
+      .order("creado_en", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    return data?.creado_en ? new Date(data.creado_en) : new Date();
+  } catch {
+    return new Date();
   }
 }
 

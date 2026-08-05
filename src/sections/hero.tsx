@@ -64,7 +64,11 @@ function HeroSlideshow({ variant }: { variant: "bleed" | "panel" }) {
             alt=""
             className={`hero__media-img ${i === idx ? "hero__media-img--active" : ""}`}
             loading={i === 0 ? "eager" : "lazy"}
-            decoding="async"
+            // La primera foto del hero es el LCP: se le pide prioridad alta
+            // para que el navegador la baje antes que el resto y la página
+            // "aparezca" cuanto antes. Es de lo que más pesa en el ranking.
+            fetchPriority={i === 0 ? "high" : "low"}
+            decoding={i === 0 ? "sync" : "async"}
           />
         </picture>
       ))}

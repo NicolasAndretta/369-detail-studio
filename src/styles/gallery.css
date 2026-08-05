@@ -894,3 +894,17 @@
     font-size: 0.7rem;
   }
 }
+/* ── Tamaño de toque en celular ─────────────────────────────────
+   Filtros y flechas de la galería a 44px en pantallas táctiles.
+   Con el mouse 34px alcanza; con el dedo, no. */
+@media (pointer: coarse) {
+  .gallery-filter__btn {
+    min-height: 44px;
+    padding-inline: 18px;
+  }
+
+  .gallery-card__arrow {
+    width: 44px;
+    height: 44px;
+  }
+}

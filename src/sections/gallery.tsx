@@ -74,6 +74,13 @@ export function GalleryCard({ work }: { work: GalleryWork }) {
   const hasBefore = !!angle.beforeImage && !imgError;
   const multi = work.angles.length > 1;
 
+  // Alt descriptivo para búsqueda de imágenes: arranca por el vehículo
+  // cuando lo hay, que es lo que la gente googlea.
+  const describir = (momento: string) =>
+    [work.vehicle, work.service, angle.label, momento]
+      .filter(Boolean)
+      .join(" — ");
+
   const goAngle = (dir: number) => {
     const len = work.angles.length;
     setAngleIdx((i) => (i + dir + len) % len);
@@ -119,14 +126,14 @@ export function GalleryCard({ work }: { work: GalleryWork }) {
         {hasBefore && (
           <Picture
             src={angle.beforeImage!}
-            alt={`${work.service} — ${angle.label} — Antes`}
+            alt={`${describir("Antes")} del trabajo en 369 Detail, Lugano`}
             className={`gallery-card__img ${!showAfter ? "gallery-card__img--active" : ""}`}
             onError={() => setImgError(true)}
           />
         )}
         <Picture
           src={angle.afterImage}
-          alt={`${work.service} — ${angle.label}${hasBefore ? " — Después" : ""}`}
+          alt={`${describir(hasBefore ? "Después" : "")} — 369 Detail, Lugano`}
           className={`gallery-card__img ${
             showAfter || !hasBefore ? "gallery-card__img--active" : ""
           }`}

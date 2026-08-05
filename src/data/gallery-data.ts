@@ -31,6 +31,14 @@ export interface GalleryWork {
   service: string;
   category: GalleryCategory;
   home: boolean;
+  /**
+   * Vehículo del trabajo (ej: "Mercedes-Benz 300 CE"). Viene del panel.
+   * Se usa en el alt de las fotos: "Mercedes-Benz 300 CE — Tratamiento
+   * cerámico — Después" posiciona en búsqueda de imágenes mucho mejor que
+   * "Tratamiento cerámico" a secas. Opcional porque los trabajos estáticos
+   * de este archivo no lo tienen cargado.
+   */
+  vehicle?: string;
   angles: GalleryAngle[];
 }
 

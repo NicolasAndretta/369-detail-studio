@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
+import { BUSINESS, SITE_URL, absoluteUrl } from "@/lib/site";
+import { jsonLd, localBusinessSchema } from "@/lib/schema";
 
 import "./globals.css";
 import "../styles/theme.css";
@@ -26,13 +28,18 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://369detail.com.ar"),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "369 Detail | Detailing Automotriz Profesional en Lugano",
+    // 58 caracteres: entra completo en Google sin que lo corte con "…"
+    default: "369 Detail | Detailing Automotriz en Lugano, CABA",
     template: "%s | 369 Detail",
   },
   description:
-    "Estética vehicular profesional en Lugano, Buenos Aires. Corrección de pintura, tratamientos cerámicos y detailing especializado. Solicitá tu turno hoy.",
+    "Detailing automotriz en Lugano, Buenos Aires. Pulido y corrección de pintura, tratamiento cerámico, lavado de motor y limpieza de interior. Turnos por WhatsApp.",
+  applicationName: BUSINESS.name,
+  authors: [{ name: BUSINESS.name }],
+  creator: BUSINESS.name,
+  publisher: BUSINESS.name,
   keywords: [
     "detailing automotriz",
     "corrección de pintura",
@@ -41,31 +48,34 @@ export const metadata: Metadata = {
     "lavado técnico",
     "tratamiento cerámico",
     "detailing Lugano",
+    "detailing Mataderos",
     "detailing Buenos Aires",
+    "lavado de motor",
     "369 Detail",
   ],
+  category: "Automotive",
   openGraph: {
-    title: "369 Detail | Detailing Automotriz Profesional",
+    title: "369 Detail | Detailing Automotriz en Lugano, CABA",
     description:
-      "Corrección de pintura, tratamientos cerámicos y detailing especializado en Lugano, Buenos Aires.",
-    siteName: "369 Detail",
+      "Pulido y corrección de pintura, tratamientos cerámicos y detailing especializado en Lugano, Buenos Aires.",
+    siteName: BUSINESS.name,
     locale: "es_AR",
     type: "website",
-    url: "https://369detail.com.ar",
+    url: absoluteUrl("/"),
     images: [
       {
         url: "/images/branding/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "369 Detail — Detailing Automotriz Profesional en Lugano",
+        alt: "369 Detail — Detailing automotriz profesional en Lugano, Buenos Aires",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "369 Detail | Detailing Automotriz Profesional",
+    title: "369 Detail | Detailing Automotriz en Lugano, CABA",
     description:
-      "Corrección de pintura, tratamientos cerámicos y detailing especializado en Lugano, Buenos Aires.",
+      "Pulido y corrección de pintura, tratamientos cerámicos y detailing especializado en Lugano, Buenos Aires.",
     images: ["/images/branding/og-image.jpg"],
   },
   robots: {
@@ -74,10 +84,21 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
+      // Que Google pueda usar la foto grande en el resultado y no recorte el texto.
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
     },
   },
   alternates: {
-    canonical: "https://369detail.com.ar",
+    canonical: absoluteUrl("/"),
+  },
+  // Señales de zona: se las lee Google y también los buscadores con IA.
+  other: {
+    "geo.region": "AR-C",
+    "geo.placename": `${BUSINESS.locality}, Buenos Aires`,
+    "geo.position": `${BUSINESS.lat};${BUSINESS.lng}`,
+    ICBM: `${BUSINESS.lat}, ${BUSINESS.lng}`,
   },
   icons: {
     icon: [
@@ -93,39 +114,16 @@ export const metadata: Metadata = {
   },
 };
 
-const LOCAL_BUSINESS_SCHEMA = {
-  "@context": "https://schema.org",
-  "@type": "AutoRepair",
-  name: "369 Detail",
-  description:
-    "Estética vehicular profesional en Lugano, Buenos Aires. Corrección de pintura, tratamientos cerámicos y detailing especializado.",
-  url: "https://369detail.com.ar",
-  telephone: "+5491154748668",
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: "Dr. Horacio Casco 5140",
-    addressLocality: "Lugano",
-    addressRegion: "Buenos Aires",
-    addressCountry: "AR",
-  },
-  geo: {
-    "@type": "GeoCoordinates",
-    latitude: -34.6677,
-    longitude: -58.4785,
-  },
-  openingHoursSpecification: [
-    {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-      opens: "09:00",
-      closes: "18:00",
-    },
-  ],
-  sameAs: [
-    "https://www.instagram.com/369detail/",
-    "https://www.tiktok.com/@369detail",
-  ],
-};
+/** Origen del storage de Supabase, para el preconnect. Vacío si no está configurado. */
+function origenSupabase(): string | null {
+  try {
+    return new URL(process.env.SUPABASE_URL!).origin;
+  } catch {
+    return null;
+  }
+}
+
+const supabaseHost = origenSupabase();
 
 export default function RootLayout({
   children,
@@ -133,13 +131,32 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es-AR">
       <head>
+        {/* La primera foto del hero es el LCP. Precargarla la empieza a bajar
+            antes de que el navegador llegue a parsear el componente. Se pide
+            el AVIF: el que no lo soporta ignora esta línea y baja el WebP. */}
+        <link
+          rel="preload"
+          as="image"
+          href="/images/gallery/hero-1-amarok.avif"
+          type="image/avif"
+          fetchPriority="high"
+        />
+
+        {/* Las fotos que sube el primo viven en Supabase. Abrir la conexión
+            (DNS + TLS) apenas empieza la página ahorra ~200-300ms cuando
+            después aparecen las imágenes de la galería. */}
+        {supabaseHost && (
+          <>
+            <link rel="preconnect" href={supabaseHost} crossOrigin="" />
+            <link rel="dns-prefetch" href={supabaseHost} />
+          </>
+        )}
+
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(LOCAL_BUSINESS_SCHEMA),
-          }}
+          dangerouslySetInnerHTML={{ __html: jsonLd(localBusinessSchema()) }}
         />
       </head>
       <body className={`${inter.variable} ${outfit.variable}`}>

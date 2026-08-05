@@ -1,19 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
-const WHATSAPP_URL =
-  "https://wa.me/5491154748668?text=Hola%2C%20quiero%20solicitar%20un%20turno%20en%20369%20Detail.";
+import { whatsappUrl } from "@/lib/site";
+
+const WHATSAPP_URL = whatsappUrl();
+
+// Media query leída como fuente externa. Antes se resolvía con un setState
+// dentro del efecto, que dispara un render de más en cada carga.
+const TOUCH_QUERY = "(hover: none)";
+
+function suscribirTouch(alCambiar: () => void): () => void {
+  const mq = window.matchMedia(TOUCH_QUERY);
+  mq.addEventListener("change", alCambiar);
+  return () => mq.removeEventListener("change", alCambiar);
+}
 
 export function WhatsAppSticky() {
   const [isVisible, setIsVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isTouchOnly, setIsTouchOnly] = useState(false);
+
+  const isTouchOnly = useSyncExternalStore(
+    suscribirTouch,
+    () => window.matchMedia(TOUCH_QUERY).matches,
+    () => false // en el servidor no hay matchMedia: se asume con hover
+  );
 
   useEffect(() => {
-    setIsTouchOnly(window.matchMedia("(hover: none)").matches);
     const handleScroll = () => {
       setIsVisible(window.scrollY > 100);
     };
