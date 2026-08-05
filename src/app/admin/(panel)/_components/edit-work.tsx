@@ -226,6 +226,8 @@ export function EditWork({
                 </div>
                 <FotoInput
                   hasFile={false}
+                  disabled={busy}
+                  onError={setError}
                   label={f.antes_url ? "Reemplazar antes" : "Subir antes"}
                   onFile={(file) => {
                     const fd = new FormData();
@@ -259,6 +261,8 @@ export function EditWork({
                 </div>
                 <FotoInput
                   hasFile={false}
+                  disabled={busy}
+                  onError={setError}
                   label="Reemplazar después"
                   onFile={(file) => {
                     const fd = new FormData();
@@ -304,6 +308,8 @@ export function EditWork({
             <span className="admin-photo-slot__label">Antes (opcional)</span>
             <FotoInput
               hasFile={!!nuevoAntes}
+              disabled={busy}
+              onError={setError}
               onFile={(file) => setNuevoAntes(file)}
             />
           </div>
@@ -313,6 +319,8 @@ export function EditWork({
             </span>
             <FotoInput
               hasFile={!!nuevoDespues}
+              disabled={busy}
+              onError={setError}
               onFile={(file) => setNuevoDespues(file)}
             />
           </div>

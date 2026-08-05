@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual } from "crypto";
+import { createHash, createHmac, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -21,14 +21,22 @@ function sign(payload: string, secret: string): string {
   return createHmac("sha256", secret).update(payload).digest("hex");
 }
 
-/** ¿La clave ingresada es la correcta? (comparación a tiempo constante) */
+/**
+ * Comparación a tiempo constante de dos textos de largo distinto.
+ * Se hashean primero: así los dos buffers miden lo mismo (32 bytes) y el
+ * tiempo de respuesta no delata cuántos caracteres tiene la clave real.
+ */
+function equalsSeguro(a: string, b: string): boolean {
+  const ha = createHash("sha256").update(a, "utf8").digest();
+  const hb = createHash("sha256").update(b, "utf8").digest();
+  return timingSafeEqual(ha, hb);
+}
+
+/** ¿La clave ingresada es la correcta? */
 export function isValidPassword(input: string): boolean {
   const expected = process.env.ADMIN_PASSWORD;
   if (!expected || !input) return false;
-  const a = Buffer.from(input);
-  const b = Buffer.from(expected);
-  if (a.length !== b.length) return false;
-  return timingSafeEqual(a, b);
+  return equalsSeguro(input, expected);
 }
 
 /** Crea el valor de la cookie de sesión: expiración + firma. */
@@ -51,11 +59,7 @@ export function isValidSessionToken(token: string | undefined): boolean {
 
   if (Number(exp) < Date.now()) return false;
 
-  const expected = sign(exp, secret);
-  const a = Buffer.from(sig);
-  const b = Buffer.from(expected);
-  if (a.length !== b.length) return false;
-  return timingSafeEqual(a, b);
+  return equalsSeguro(sig, sign(exp, secret));
 }
 
 /** Guardia para páginas y API del panel. */

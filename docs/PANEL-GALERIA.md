@@ -74,6 +74,34 @@ npm run dev
    rueda** (mismo ángulo). Se pueden sumar más ángulos.
 4. Guardar. Listo — la web se actualiza sola.
 
+### Qué pasa cuando elegís una foto
+
+Al tocar "Elegir foto" el botón dice **"Preparando…"** un segundo: el celular
+está achicando la foto **antes** de mandarla. Es a propósito — así sube en
+segundos en vez de minutos y no se corta con datos móviles.
+
+Si algo no sirve, el panel lo dice en criollo y no deja seguir. Los casos:
+
+| Dice | Qué pasó | Qué hacer |
+|---|---|---|
+| "Eso no es una foto" | Elegiste un video o un PDF | Elegir una imagen |
+| "La foto pesa X MB y es demasiado" | Más de 30 MB, casi seguro un video | Elegir la foto, no el video |
+| "Formato HEIC y este navegador no la puede leer" | Foto de iPhone en formato nuevo | iPhone → **Ajustes → Cámara → Formatos → "Más compatible"** y sacarla de nuevo |
+| "Se cortó la conexión" | Se cayó la señal a mitad de subida | Reintentar con mejor señal |
+
+> Si falla una foto en el medio de un trabajo nuevo, **no queda nada a medias**:
+> se borra el trabajo y las fotos que ya habían subido, y se arranca limpio.
+
+### Si la clave no entra
+
+Después de **8 intentos fallidos** el panel bloquea esa conexión **10 minutos**.
+Es contra los que prueban claves automáticamente. Como el taller sale por una
+sola IP, el bloqueo los alcanza a los dos: si pasa, esperar los 10 minutos o
+entrar desde los datos del celu (otra IP).
+
+La clave está en `.env.local` (local) y en el hPanel de Hostinger (producción).
+**Las dos tienen que ser iguales.**
+
 > Protocolo de fotos (qué sacar y cómo): `taller-369/pedido-de-fotos.md` en el
 > universo. Regla de oro: **sacar el ANTES siempre, en el momento**; el después
 > no se puede "des-lavar".

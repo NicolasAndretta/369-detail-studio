@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FotoInput } from "../_components/foto-input";
 
@@ -27,14 +27,27 @@ const DEFAULT_ANGLES: AngleDraft[] = [
   { etiqueta: "Rueda", antes: null, despues: null },
 ];
 
+/**
+ * Miniatura de la foto elegida.
+ *
+ * Antes esto creaba y revocaba la URL del blob durante el render: con solo
+ * escribir en el campo "Vehículo" se volvía a renderizar todo, la foto ya
+ * cargada quedaba revocada y las miniaturas parpadeaban o desaparecían.
+ * Ahora la URL se crea una sola vez por archivo y se libera al cambiarlo.
+ */
 function Preview({ file, hint }: { file: File | null; hint: string }) {
-  const url = useRef<string | null>(null);
-  if (url.current) URL.revokeObjectURL(url.current);
-  url.current = file ? URL.createObjectURL(file) : null;
+  // La URL se calcula una sola vez por archivo, y el efecto solo se ocupa
+  // de liberarla cuando cambia la foto o se desmonta la tarjeta.
+  const url = useMemo(() => (file ? URL.createObjectURL(file) : null), [file]);
+
+  useEffect(() => {
+    if (!url) return;
+    return () => URL.revokeObjectURL(url);
+  }, [url]);
 
   return (
     <div className="admin-photo-slot__preview">
-      {url.current ? <img src={url.current} alt="" /> : <span>{hint}</span>}
+      {url ? <img src={url} alt="" /> : <span>{hint}</span>}
     </div>
   );
 }
@@ -184,7 +197,9 @@ export default function NuevoTrabajoPage() {
                 <Preview file={a.antes} hint="Sin foto de antes" />
                 <FotoInput
                   hasFile={!!a.antes}
+                  disabled={busy}
                   onFile={(file) => setAngle(i, { antes: file })}
+                  onError={setError}
                 />
               </div>
               <div className="admin-photo-slot">
@@ -194,7 +209,9 @@ export default function NuevoTrabajoPage() {
                 <Preview file={a.despues} hint="Elegí la foto terminada" />
                 <FotoInput
                   hasFile={!!a.despues}
+                  disabled={busy}
                   onFile={(file) => setAngle(i, { despues: file })}
+                  onError={setError}
                 />
               </div>
             </div>

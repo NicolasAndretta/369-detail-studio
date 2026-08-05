@@ -11,11 +11,12 @@ export const metadata: Metadata = {
 export default async function AdminLoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; min?: string }>;
 }) {
   if (await isAdminAuthenticated()) redirect("/admin");
 
-  const { error } = await searchParams;
+  const { error, min } = await searchParams;
+  const minutos = Number(min) > 0 ? Math.min(Number(min), 60) : 15;
 
   return (
     <div className="admin-login">
@@ -26,6 +27,12 @@ export default async function AdminLoginPage({
         <p>Galería del taller — acceso privado</p>
 
         {error === "1" && <div className="admin-error">Clave incorrecta.</div>}
+        {error === "bloqueado" && (
+          <div className="admin-error">
+            Demasiados intentos fallidos. Probá de nuevo en {minutos} minuto
+            {minutos === 1 ? "" : "s"}.
+          </div>
+        )}
         {error === "config" && (
           <div className="admin-error">
             Falta configurar la clave del panel (ADMIN_PASSWORD).

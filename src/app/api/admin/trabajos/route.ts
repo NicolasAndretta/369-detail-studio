@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { isAdminAuthenticated } from "@/lib/admin-session";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
-import { processAndUploadPhoto } from "@/lib/fotos-upload";
+import { deleteWorkPhotos, processAndUploadPhoto } from "@/lib/fotos-upload";
 import { SERVICIOS } from "@/lib/galeria";
 
 export const maxDuration = 60;
@@ -86,10 +86,13 @@ export async function POST(req: Request) {
   try {
     for (let i = 0; i < angulos.length; i++) {
       const a = angulos[i];
-      const despuesUrl = await processAndUploadPhoto(a.despues, trabajo.id);
-      const antesUrl = a.antes
-        ? await processAndUploadPhoto(a.antes, trabajo.id)
-        : null;
+
+      // Las dos fotos del ángulo van en paralelo: es la mitad del tiempo de
+      // espera, que es lo que hacía que la carga se cortara desde el celu.
+      const [despuesUrl, antesUrl] = await Promise.all([
+        processAndUploadPhoto(a.despues, trabajo.id),
+        a.antes ? processAndUploadPhoto(a.antes, trabajo.id) : Promise.resolve(null),
+      ]);
 
       const { error: fotoError } = await supabase.from("fotos").insert({
         trabajo_id: trabajo.id,
@@ -101,7 +104,9 @@ export async function POST(req: Request) {
       if (fotoError) throw fotoError;
     }
   } catch (e) {
-    // Si falló la carga de fotos, no dejar un trabajo a medias
+    // Si falló la carga, no dejar un trabajo a medias NI fotos huérfanas
+    // ocupando el gigabyte gratis de Supabase.
+    await deleteWorkPhotos(trabajo.id);
     await supabase.from("trabajos").delete().eq("id", trabajo.id);
     const msg = e instanceof Error ? e.message : "error al subir fotos";
     return NextResponse.json({ error: msg }, { status: 500 });

@@ -257,6 +257,7 @@
 .abtn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   padding: 0.45rem 0.8rem;
   font-size: 0.8rem;
@@ -381,6 +382,9 @@
   justify-content: center;
   gap: 8px;
   width: 100%;
+  /* 48px mínimo: es el tamaño de toque que pide Google para mobile
+     y el que hace que no falles el botón con el dedo mojado en el taller. */
+  min-height: 48px;
   padding: 0.7rem 0.9rem;
   border: 1.5px dashed rgba(163, 255, 60, 0.45);
   border-radius: var(--radius-sm, 8px);
@@ -404,6 +408,13 @@
   border-style: solid;
   border-color: rgba(163, 255, 60, 0.6);
   background: rgba(163, 255, 60, 0.09);
+}
+
+/* Mientras el celular achica la foto: sin doble toque por accidente */
+.admin-file-btn--busy {
+  opacity: 0.6;
+  cursor: progress;
+  pointer-events: none;
 }
 
 .admin-file-btn input[type="file"] {
@@ -435,5 +446,63 @@
   .admin-work__thumb {
     width: 100%;
     height: 140px;
+  }
+}
+
+/* ── Tamaño de toque en celular ─────────────────────────────────
+   El primo usa el panel con el celu en la mano, muchas veces con los
+   dedos húmedos. En pantallas táctiles los botones pasan a 44px de alto
+   (el mínimo que recomiendan Apple y Google) sin tocar el diseño en
+   escritorio, donde con el mouse se acierta igual. */
+@media (pointer: coarse) {
+  .abtn {
+    min-height: 44px;
+    padding-inline: 1rem;
+  }
+
+  .admin-header__brand {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* Ayuda chica debajo de un campo (cómo copiar el link, etc.) */
+.admin-hint {
+  display: block;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.admin-hint strong {
+  color: var(--text-secondary);
+}
+
+/* ── Header del panel en pantallas angostas ─────────────────────
+   Con tres botones (Videos · Nuevo trabajo · Salir) más la marca no
+   entran en 390px y aparecía scroll horizontal. Abajo de 420px la
+   navegación baja a una segunda fila y los botones se reparten el ancho. */
+@media (max-width: 420px) {
+  .admin-header {
+    flex-wrap: wrap;
+    row-gap: 0.55rem;
+  }
+
+  .admin-header__nav {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.4rem;
+  }
+
+  .admin-header__nav > form {
+    display: flex;
+    flex: 1;
+  }
+
+  .admin-header__nav .abtn {
+    flex: 1;
+    padding-inline: 0.5rem;
+    font-size: 0.75rem;
   }
 }

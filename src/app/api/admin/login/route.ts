@@ -5,33 +5,48 @@ import {
   SESSION_COOKIE,
   sessionCookieOptions,
 } from "@/lib/admin-session";
+import { chequearLimite, clientIp, limpiarFallos, registrarFallo } from "@/lib/rate-limit";
 
-// Redirigir respetando el host desde el que entró el usuario (celu por IP de
-// red, dominio en prod, etc.) — `req.url` puede venir normalizado a localhost.
-function redirectTo(req: Request, path: string) {
-  const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
-  const proto =
-    req.headers.get("x-forwarded-proto") ??
-    new URL(req.url).protocol.replace(":", "");
-  return NextResponse.redirect(`${proto}://${host}${path}`, 303);
+/**
+ * Redirección con ruta RELATIVA.
+ *
+ * Antes se armaba la URL absoluta con el header `x-forwarded-host`, que lo
+ * manda quien hace el pedido: cualquiera podía forzar un redirect a un sitio
+ * ajeno desde una URL de 369 (phishing). Con `Location` relativo el navegador
+ * lo resuelve contra el host real, así que sigue funcionando igual desde el
+ * celu por IP de red, desde localhost o desde el dominio — y no hay nada que
+ * un tercero pueda inyectar.
+ */
+function redirectTo(path: string): NextResponse {
+  return new NextResponse(null, { status: 303, headers: { Location: path } });
 }
 
 export async function POST(req: Request) {
+  const ip = clientIp(req);
+
+  const limite = chequearLimite(ip);
+  if (!limite.permitido) {
+    const minutos = Math.ceil(limite.esperaSegundos / 60);
+    return redirectTo(`/admin/login?error=bloqueado&min=${minutos}`);
+  }
+
   const form = await req.formData();
   const password = String(form.get("password") ?? "");
 
   if (!isValidPassword(password)) {
-    // Freno chico contra fuerza bruta
+    registrarFallo(ip);
+    // Freno chico para que probar claves de a una sea lento
     await new Promise((r) => setTimeout(r, 500));
-    return redirectTo(req, "/admin/login?error=1");
+    return redirectTo("/admin/login?error=1");
   }
 
   const token = createSessionToken();
   if (!token) {
-    return redirectTo(req, "/admin/login?error=config");
+    return redirectTo("/admin/login?error=config");
   }
 
-  const res = redirectTo(req, "/admin");
+  limpiarFallos(ip);
+  const res = redirectTo("/admin");
   res.cookies.set(SESSION_COOKIE, token, sessionCookieOptions);
   return res;
 }

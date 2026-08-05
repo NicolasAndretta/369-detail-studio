@@ -39,11 +39,13 @@ export async function POST(req: Request) {
     .maybeSingle();
 
   try {
-    const despuesUrl = await processAndUploadPhoto(despues, trabajoId);
-    const antesUrl =
+    // Las dos fotos en paralelo: la mitad de espera desde el celu.
+    const [despuesUrl, antesUrl] = await Promise.all([
+      processAndUploadPhoto(despues, trabajoId),
       antes instanceof File && antes.size > 0
-        ? await processAndUploadPhoto(antes, trabajoId)
-        : null;
+        ? processAndUploadPhoto(antes, trabajoId)
+        : Promise.resolve(null),
+    ]);
 
     const { error } = await supabase.from("fotos").insert({
       trabajo_id: trabajoId,
