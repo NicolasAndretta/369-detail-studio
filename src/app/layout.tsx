@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import { BUSINESS, SITE_URL, absoluteUrl } from "@/lib/site";
 import { jsonLd, localBusinessSchema } from "@/lib/schema";
+import { buildCsp } from "@/lib/csp";
 
 import "./globals.css";
 import "../styles/theme.css";
@@ -133,6 +134,13 @@ export default function RootLayout({
   return (
     <html lang="es-AR">
       <head>
+        {/* El CSP va por <meta> porque el CDN de Hostinger reemplaza el header
+            HTTP por uno propio. Tiene que ir lo más arriba posible del <head>:
+            solo aplica a lo que se carga DESPUÉS de esta línea. */}
+        {process.env.NODE_ENV === "production" && (
+          <meta httpEquiv="Content-Security-Policy" content={buildCsp(true)} />
+        )}
+
         {/* La primera foto del hero es el LCP. Precargarla la empieza a bajar
             antes de que el navegador llegue a parsear el componente. Se pide
             el AVIF: el que no lo soporta ignora esta línea y baja el WebP. */}
