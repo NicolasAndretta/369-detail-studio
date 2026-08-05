@@ -26,6 +26,12 @@ const TIPOS_ACEPTADOS = new Set([
   "image/gif",
 ]);
 
+// sharp en su variante WASM (cuando el binario nativo no carga, p. ej. en
+// Hostinger) devuelve buffers sobre memoria compartida, que el fetch de Node
+// rechaza al subirlos: "ArrayBuffer: SharedArrayBuffer is not allowed".
+const unshare = (b: Buffer) =>
+  b.buffer instanceof SharedArrayBuffer ? Buffer.from(b) : b;
+
 /** Error con un mensaje que se le puede mostrar al primo tal cual. */
 export class ErrorDeFoto extends Error {}
 
@@ -45,6 +51,9 @@ function mensajeAmigable(e: unknown): string {
   }
   if (/premature end|corrupt|truncated/i.test(crudo)) {
     return "La foto llegó incompleta. Probá subirla de nuevo con mejor señal.";
+  }
+  if (/SharedArrayBuffer/i.test(crudo)) {
+    return "Error interno al procesar la foto en el servidor. Avisale a Nico.";
   }
   if (/exceeded the maximum allowed size|Payload too large|413/i.test(crudo)) {
     return "La foto pesa demasiado para el servidor.";
@@ -86,24 +95,25 @@ export async function processAndUploadPhoto(
 
   const input = Buffer.from(await file.arrayBuffer());
 
+  // Un pipeline nuevo por formato + `sequentialRead`: procesa un encode a la
+  // vez para no duplicar el pico de memoria con fotos grandes de celular.
+  const pipeline = () =>
+    sharp(input, { sequentialRead: true }).rotate().resize(MAX_EDGE, MAX_EDGE, {
+      fit: "inside",
+      withoutEnlargement: true,
+    });
+
   let webp: Buffer;
   let avif: Buffer;
   try {
-    const base = sharp(input, { failOn: "error" })
-      .rotate()
-      .resize(MAX_EDGE, MAX_EDGE, {
-        fit: "inside",
-        withoutEnlargement: true,
-      });
-
-    [webp, avif] = await Promise.all([
-      base.clone().webp({ quality: 82 }).toBuffer(),
-      // `effort: 3` en vez del 4 por defecto: AVIF es carísimo de codificar y
-      // en un hosting compartido la diferencia entre 3 y 4 son varios segundos
-      // por foto — justo lo que hacía que la carga se pasara del tiempo máximo.
-      // El archivo queda apenas más grande y a simple vista es igual.
-      base.clone().avif({ quality: 58, effort: 3 }).toBuffer(),
-    ]);
+    // `effort: 0` es CLAVE: en Hostinger sharp corre en WebAssembly (un solo
+    // núcleo) y el effort AVIF por defecto (4) tarda ~90s por foto → la subida
+    // se corta por timeout. Con effort 0 baja a ~1s y el archivo queda igual o
+    // más chico. El WebP es el formato principal; el AVIF es el hermano opcional.
+    // Los dos encodes van en serie a propósito: en un solo núcleo, hacerlos en
+    // paralelo no acelera nada y duplica la memoria.
+    webp = unshare(await pipeline().webp({ quality: 82 }).toBuffer());
+    avif = unshare(await pipeline().avif({ quality: 60, effort: 0 }).toBuffer());
   } catch (e) {
     throw new ErrorDeFoto(mensajeAmigable(e));
   }
@@ -111,6 +121,7 @@ export async function processAndUploadPhoto(
   const name = randomUUID();
   const dir = `trabajos/${trabajoId}`;
 
+  // Las subidas sí van en paralelo: es red, no CPU.
   const [upWebp, upAvif] = await Promise.all([
     supabase.storage.from(BUCKET).upload(`${dir}/${name}.webp`, webp, {
       contentType: "image/webp",

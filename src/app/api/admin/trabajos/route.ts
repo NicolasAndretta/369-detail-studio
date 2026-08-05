@@ -87,12 +87,14 @@ export async function POST(req: Request) {
     for (let i = 0; i < angulos.length; i++) {
       const a = angulos[i];
 
-      // Las dos fotos del ángulo van en paralelo: es la mitad del tiempo de
-      // espera, que es lo que hacía que la carga se cortara desde el celu.
-      const [despuesUrl, antesUrl] = await Promise.all([
-        processAndUploadPhoto(a.despues, trabajo.id),
-        a.antes ? processAndUploadPhoto(a.antes, trabajo.id) : Promise.resolve(null),
-      ]);
+      // Una foto a la vez, a propósito: en Hostinger sharp corre en
+      // WebAssembly sobre un solo núcleo, así que procesarlas en paralelo
+      // no acelera nada y duplica el pico de memoria. Lo que sí hace que
+      // esto sea rápido es que el celular ya las achicó antes de subirlas.
+      const despuesUrl = await processAndUploadPhoto(a.despues, trabajo.id);
+      const antesUrl = a.antes
+        ? await processAndUploadPhoto(a.antes, trabajo.id)
+        : null;
 
       const { error: fotoError } = await supabase.from("fotos").insert({
         trabajo_id: trabajo.id,

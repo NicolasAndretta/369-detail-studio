@@ -39,13 +39,13 @@ export async function POST(req: Request) {
     .maybeSingle();
 
   try {
-    // Las dos fotos en paralelo: la mitad de espera desde el celu.
-    const [despuesUrl, antesUrl] = await Promise.all([
-      processAndUploadPhoto(despues, trabajoId),
+    // Una a la vez: sharp corre en WebAssembly de un solo núcleo en
+    // Hostinger (ver el comentario largo en lib/fotos-upload.ts).
+    const despuesUrl = await processAndUploadPhoto(despues, trabajoId);
+    const antesUrl =
       antes instanceof File && antes.size > 0
-        ? processAndUploadPhoto(antes, trabajoId)
-        : Promise.resolve(null),
-    ]);
+        ? await processAndUploadPhoto(antes, trabajoId)
+        : null;
 
     const { error } = await supabase.from("fotos").insert({
       trabajo_id: trabajoId,
