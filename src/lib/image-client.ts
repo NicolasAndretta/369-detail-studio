@@ -14,12 +14,22 @@
 // corta, y al servidor le queda un trabajo liviano.
 // ============================================================
 
-/** Lado máximo que se sube. El servidor después lo lleva a 1920. */
-const LADO_MAX = 2000;
+/**
+ * Lado máximo que se sube: exactamente el mismo al que el servidor va a
+ * reducirla igual (MAX_EDGE en `lib/fotos-upload.ts`). Mandar más grande
+ * es pagar datos móviles por píxeles que se tiran del otro lado.
+ */
+const LADO_MAX = 1920;
+/**
+ * Calidad del JPEG que viaja. No es la calidad final: el servidor
+ * recomprime a WebP 82 y AVIF 60. Con 0.85 la diferencia visual es nula
+ * y el archivo pesa casi la mitad que con 0.92.
+ */
+const CALIDAD = 0.85;
 /** Techo del archivo original: más que esto es un video o un error. */
 const MAX_ORIGINAL = 30 * 1024 * 1024;
 /** Debajo de esto y ya chica, se sube tal cual (no vale la pena recomprimir). */
-const YA_ESTA_BIEN = 1.2 * 1024 * 1024;
+const YA_ESTA_BIEN = 900 * 1024;
 
 /** Error con mensaje listo para mostrarle al usuario. */
 export class ImagenInvalida extends Error {}
@@ -131,7 +141,7 @@ export async function prepararFoto(original: File): Promise<File> {
   if (fuente instanceof ImageBitmap) fuente.close();
 
   const blob = await new Promise<Blob | null>((resolve) =>
-    canvas.toBlob(resolve, "image/jpeg", 0.9)
+    canvas.toBlob(resolve, "image/jpeg", CALIDAD)
   );
 
   if (!blob) {

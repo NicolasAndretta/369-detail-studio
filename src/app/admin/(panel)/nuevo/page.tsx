@@ -3,6 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FotoInput } from "../_components/foto-input";
+import {
+  SubidaVencida,
+  subirConProgreso,
+} from "@/lib/upload-client";
 
 const SERVICIOS = [
   "Lavado detallado",
@@ -60,6 +64,8 @@ export default function NuevoTrabajoPage() {
   const [angles, setAngles] = useState<AngleDraft[]>(DEFAULT_ANGLES);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /** Texto en vivo de la subida ("subiendo 45%", "optimizando…"). */
+  const [progreso, setProgreso] = useState<string | null>(null);
 
   const setAngle = (i: number, patch: Partial<AngleDraft>) =>
     setAngles((prev) => prev.map((a, j) => (j === i ? { ...a, ...patch } : a)));
@@ -74,6 +80,16 @@ export default function NuevoTrabajoPage() {
   const removeAngle = (i: number) =>
     setAngles((prev) => prev.filter((_, j) => j !== i));
 
+  /**
+   * Guarda el trabajo subiendo UN ÁNGULO POR PEDIDO.
+   *
+   * Antes iba todo en un solo POST: con 2 ángulos son 4 fotos, y desde el
+   * celular del taller ese pedido tarda lo suficiente como para que se
+   * corte — y cuando se cortaba, se perdía el trabajo entero.
+   *
+   * Así, cada pedido lleva 2 fotos como mucho. Si uno falla, lo anterior
+   * ya quedó guardado y se completa desde "Editar" sin volver a empezar.
+   */
   const submit = async () => {
     setError(null);
 
@@ -96,35 +112,77 @@ export default function NuevoTrabajoPage() {
       return;
     }
 
-    const fd = new FormData();
-    fd.set("servicio", servicio);
-    fd.set("vehiculo", vehiculo.trim());
-    fd.set("en_inicio", enInicio ? "si" : "no");
-    conFoto.forEach((a, i) => {
-      fd.set(`etiqueta_${i}`, a.etiqueta.trim() || `Ángulo ${i + 1}`);
-      fd.set(`despues_${i}`, a.despues!);
-      if (a.antes) fd.set(`antes_${i}`, a.antes);
-    });
+    const etiquetaDe = (a: AngleDraft, i: number) =>
+      a.etiqueta.trim() || `Ángulo ${i + 1}`;
+
+    const total = conFoto.length;
+
+    // Dos minutos por ángulo: de sobra para 2 fotos, y si se colgó de
+    // verdad corta con un mensaje en vez de dejar el botón girando.
+    const pedir = (url: string, body: FormData, i: number) =>
+      subirConProgreso(url, body, (pct) => {
+        const cual = total > 1 ? `Ángulo ${i + 1} de ${total} — ` : "";
+        setProgreso(
+          pct < 100
+            ? `${cual}subiendo ${pct}%`
+            : `${cual}optimizando las fotos en el servidor…`
+        );
+      });
 
     setBusy(true);
+    setProgreso("Preparando el envío…");
+
     try {
-      const res = await fetch("/api/admin/trabajos", { method: "POST", body: fd });
-      const j = await res.json().catch(() => null);
-      if (!res.ok) {
-        setError(
-          j?.error ??
-            "No se pudo guardar. Puede ser la señal o alguna foto muy pesada — probá de nuevo con buena conexión."
-        );
+      // ── 1. El trabajo se crea junto con el primer ángulo ──
+      const primero = conFoto[0];
+      const fd = new FormData();
+      fd.set("servicio", servicio);
+      fd.set("vehiculo", vehiculo.trim());
+      fd.set("en_inicio", enInicio ? "si" : "no");
+      fd.set("etiqueta_0", etiquetaDe(primero, 0));
+      fd.set("despues_0", primero.despues!);
+      if (primero.antes) fd.set("antes_0", primero.antes);
+
+      const res = await pedir("/api/admin/trabajos", fd, 0);
+      if (!res.ok || !res.body?.id) {
+        setError(res.body?.error ?? "No se pudo crear el trabajo. Probá de nuevo.");
         return;
       }
+      const trabajoId = res.body.id;
+
+      // ── 2. Los demás ángulos, de a uno ──
+      for (let i = 1; i < total; i++) {
+        const a = conFoto[i];
+        const fdA = new FormData();
+        fdA.set("trabajo_id", trabajoId);
+        fdA.set("etiqueta", etiquetaDe(a, i));
+        fdA.set("despues", a.despues!);
+        if (a.antes) fdA.set("antes", a.antes);
+
+        const r = await pedir("/api/admin/fotos", fdA, i);
+        if (!r.ok) {
+          setError(
+            `El trabajo se guardó con ${i} ángulo(s), pero el ${i + 1} falló: ${
+              r.body?.error ?? "se cortó la subida"
+            }. Entrá a "Editar" y agregá los que faltan — no hace falta empezar de nuevo.`
+          );
+          router.refresh();
+          return;
+        }
+      }
+
       router.push("/admin");
       router.refresh();
-    } catch {
+    } catch (e) {
       setError(
-        "Se cortó la subida. Revisá la señal y probá de nuevo (si son muchas fotos, cargá menos por vez)."
+        e instanceof SubidaVencida
+          ? "La subida tardó más de 2 minutos y se cortó. Buscá wifi o mejor señal y probá de nuevo."
+          : "Se cortó la conexión durante la subida. Si el trabajo llegó a crearse, aparece en el listado y se completa desde 'Editar' — no hace falta empezar de nuevo."
       );
+      router.refresh();
     } finally {
       setBusy(false);
+      setProgreso(null);
     }
   };
 
@@ -236,11 +294,13 @@ export default function NuevoTrabajoPage() {
           onClick={submit}
           style={{ padding: "0.7rem 1.6rem" }}
         >
-          {busy ? "Subiendo fotos…" : "Guardar trabajo"}
+          {busy ? "Subiendo…" : "Guardar trabajo"}
         </button>
         {busy && (
           <span className="admin-progress">
-            Optimizando y subiendo, puede tardar unos segundos…
+            {progreso ?? "Preparando…"}
+            <br />
+            <small>No cierres esta pantalla.</small>
           </span>
         )}
       </div>
