@@ -2,7 +2,7 @@
 
 Landing page premium para **369 Detail**, estudio de detailing automotor en Buenos Aires.
 
-🌐 **[Ver sitio en producción](https://steelblue-bear-881853.hostingersite.com)**
+🌐 **[Ver sitio en producción](https://369detail.com.ar)**
 
 ---
 
@@ -40,12 +40,15 @@ La mayoría de los talleres de detailing en Argentina depende exclusivamente de 
 
 ## Arquitectura
 
-Sin base de datos. El contenido se gestiona mediante archivos TypeScript centralizados:
+El contenido lo carga el taller desde un panel propio en `/admin`: trabajos con
+pares antes/después, qué se muestra y qué va al inicio, y los reels de Instagram
+y TikTok. Las fotos se optimizan solas (rotación EXIF, WebP + AVIF) y viven en
+Supabase Storage.
 
-- `gallery-data.ts` — imágenes con categorías y rutas
-- `video-data.ts` — videos con URLs de Instagram/TikTok y thumbnails
+**Si la base falla, la web no se cae:** cae a la galería estática de
+`gallery-data.ts` y `video-data.ts`. El sitio público nunca queda sin contenido.
 
-Agregar contenido nuevo es tan simple como descomentar una entrada y reemplazar la URL, sin tocar componentes.
+Guía del panel: [`docs/PANEL-GALERIA.md`](docs/PANEL-GALERIA.md).
 
 ---
 
