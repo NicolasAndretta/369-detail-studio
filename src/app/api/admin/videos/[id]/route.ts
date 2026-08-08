@@ -21,11 +21,13 @@ export async function PATCH(
     titulo?: string;
     categoria?: string;
     visible?: boolean;
+    en_inicio?: boolean;
     orden?: number;
   };
 
   const update: Record<string, unknown> = {};
   if (typeof body.visible === "boolean") update.visible = body.visible;
+  if (typeof body.en_inicio === "boolean") update.en_inicio = body.en_inicio;
   if (typeof body.orden === "number" && Number.isFinite(body.orden)) {
     update.orden = Math.trunc(body.orden);
   }
@@ -45,6 +47,7 @@ export async function PATCH(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  revalidatePath("/");
   revalidatePath("/galeria");
   return NextResponse.json({ ok: true });
 }
@@ -68,6 +71,7 @@ export async function DELETE(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  revalidatePath("/");
   revalidatePath("/galeria");
   return NextResponse.json({ ok: true });
 }

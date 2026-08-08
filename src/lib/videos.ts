@@ -103,8 +103,14 @@ interface VideoRow {
   tiktok_id: string | null;
   thumbnail_url: string | null;
   visible: boolean;
+  /** Además de visible, ¿sube a la portada? Mismo criterio que `trabajos`. */
+  en_inicio: boolean;
   orden: number;
 }
+
+/** Columnas que se piden siempre. En un solo lugar para no desincronizarlas. */
+const COLUMNAS =
+  "id, titulo, categoria, instagram_code, tiktok_id, thumbnail_url, visible, en_inicio, orden";
 
 function rowToSlot(row: VideoRow): VideoSlot {
   return {
@@ -121,27 +127,34 @@ function rowToSlot(row: VideoRow): VideoSlot {
   };
 }
 
-/** Reels visibles, ordenados. Cae a los estáticos si no hay base. */
-export async function getVideos(): Promise<VideoSlot[]> {
+/**
+ * Reels visibles, ordenados. Cae a los estáticos si no hay base.
+ * @param soloInicio pide únicamente los marcados para la portada.
+ */
+export async function getVideos(soloInicio = false): Promise<VideoSlot[]> {
   const supabase = getSupabaseAdmin();
-  if (!supabase) return VIDEO_SLOTS;
+  if (!supabase) return soloInicio ? [] : VIDEO_SLOTS;
 
   try {
-    const { data, error } = await supabase
+    let consulta = supabase
       .from("videos")
-      .select(
-        "id, titulo, categoria, instagram_code, tiktok_id, thumbnail_url, visible, orden"
-      )
-      .eq("visible", true)
-      .order("orden", { ascending: true });
+      .select(COLUMNAS)
+      .eq("visible", true);
 
+    if (soloInicio) consulta = consulta.eq("en_inicio", true);
+
+    const { data, error } = await consulta.order("orden", { ascending: true });
     if (error || !data) throw error ?? new Error("sin datos");
 
     const slots = (data as VideoRow[]).map(rowToSlot);
+
+    // En la portada NO se cae a los estáticos: si Nico no eligió ninguno,
+    // la sección no va y listo. En la galería sí, para no dejarla vacía.
+    if (soloInicio) return slots;
     return slots.length > 0 ? slots : VIDEO_SLOTS;
   } catch {
-    // Tabla sin crear todavía, o Supabase caído: la sección sigue viva.
-    return VIDEO_SLOTS;
+    // Tabla sin migrar todavía, o Supabase caído: la web no se rompe.
+    return soloInicio ? [] : VIDEO_SLOTS;
   }
 }
 
@@ -152,9 +165,7 @@ export async function getVideosAdmin(): Promise<VideoRow[] | null> {
 
   const { data, error } = await supabase
     .from("videos")
-    .select(
-      "id, titulo, categoria, instagram_code, tiktok_id, thumbnail_url, visible, orden"
-    )
+    .select(COLUMNAS)
     .order("orden", { ascending: true });
 
   if (error) return null;

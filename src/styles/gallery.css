@@ -582,21 +582,27 @@
   position: relative;
 }
 
+/* Los reels son verticales (9:16), así que la grilla usa columnas angostas:
+   con columnas anchas la tarjeta quedaba mucho más ancha que la miniatura y
+   sobraba una franja negra a la derecha. El ancho máximo evita que en un
+   monitor grande las tarjetas se vuelvan enormes. */
 .reels__grid {
   display: grid;
   gap: var(--space-md);
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 1100px;
+  margin-inline: auto;
 }
 
 @media (min-width: 600px) {
   .reels__grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (min-width: 1024px) {
   .reels__grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
@@ -626,7 +632,8 @@
 .reel-card__thumb {
   position: relative;
   aspect-ratio: 9/16;
-  max-height: 320px;
+  /* Sin `max-height`: junto con el aspect-ratio le topaba la altura en 320px
+     y eso forzaba el ancho a 180px, dejando la tarjeta a medio llenar. */
   overflow: hidden;
   background: var(--surface-secondary);
 }

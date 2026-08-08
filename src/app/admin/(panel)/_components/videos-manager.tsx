@@ -200,6 +200,9 @@ export function VideosManager({
                 <span className={`admin-badge ${v.visible ? "admin-badge--on" : ""}`}>
                   {v.visible ? "Visible" : "Oculto"}
                 </span>
+                {v.en_inicio && (
+                  <span className="admin-badge admin-badge--on">Inicio</span>
+                )}
               </div>
 
               <div className="admin-work__actions">
@@ -228,6 +231,19 @@ export function VideosManager({
                   onClick={() => patch(v.id, { visible: !v.visible })}
                 >
                   {v.visible ? "Ocultar" : "Mostrar"}
+                </button>
+                <button
+                  type="button"
+                  className="abtn"
+                  disabled={busy || !v.visible}
+                  title={
+                    v.visible
+                      ? undefined
+                      : "Un video oculto no puede ir al inicio"
+                  }
+                  onClick={() => patch(v.id, { en_inicio: !v.en_inicio })}
+                >
+                  {v.en_inicio ? "Sacar del inicio" : "Poner en inicio"}
                 </button>
                 <button
                   type="button"
