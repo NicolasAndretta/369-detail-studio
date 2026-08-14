@@ -259,9 +259,9 @@ export function HeroSection() {
             className="hero__description"
             variants={fadeUp}
           >
-            Estética vehicular profesional en Lugano.
+            Estética vehicular profesional en Lugano.{" "}
             <br className="hero__br-desktop" />
-            Corrección de pintura, tratamientos cerámicos
+            Corrección de pintura, tratamientos cerámicos{" "}
             <br className="hero__br-desktop" />
             y detailing especializado.
           </motion.p>
