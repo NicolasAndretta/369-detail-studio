@@ -116,7 +116,7 @@ Cada trabajo guarda sus ángulos y sus pares de antes y después.
 ```
 La misma web en cada pantalla.
 
-Computadora, tablet y celular. No es una versión recortada:
+Computadora y celular. No es una versión recortada:
 es la misma página acomodándose sola.
 
 La mayoría de la gente va a abrir tu web desde el celular,

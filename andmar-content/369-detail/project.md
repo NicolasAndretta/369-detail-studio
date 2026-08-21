@@ -77,7 +77,7 @@ taller usa todos los días.** Cualquiera puede abrir el link y comprobarlo.
 - **Sección de reels** con grilla de miniaturas y modal de reproducción;
   soporta embeds de Instagram y TikTok.
 - **Navbar con scroll suave** que funciona también entrando desde `/galeria`.
-- **Diseño responsive** real: la misma página en escritorio, tablet y celular.
+- **Diseño responsive** real: la misma página en escritorio y celular (verificado en esos dos tamaños; no se probó en tablet).
 - **SEO técnico completo**: metadata, Open Graph, Twitter Cards, `sitemap.xml`,
   `robots.txt` (que bloquea `/admin` y `/api`) y JSON-LD de Schema.org con
   tipo `AutoWash` + `AutoRepair`, dirección, teléfono, geolocalización,
@@ -158,6 +158,12 @@ Todos 1080x1920, 30 fps, H.264 + pista de audio silenciosa.
 
 6 portadas: PROYECTOS, 369 DETAIL, WEBS, PANELES, ANTES/DESPUÉS,
 CÓMO TRABAJAMOS.
+
+### Herramientas — `andmar-content/_tooling/`
+
+Los 22 scripts con los que se generó todo el material, más un README con el
+procedimiento. Sirven para regenerar o retocar una pieza sin rehacer el
+pipeline desde cero.
 
 ### Recursos — `recursos/`
 
