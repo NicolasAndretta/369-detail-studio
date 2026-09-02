@@ -13,16 +13,6 @@ import { getSupabaseAdmin } from "@/lib/supabase-admin";
 // puede embeber una página cualquiera adentro de 369.
 // ============================================================
 
-/** Categorías sugeridas para los reels (texto libre igual). */
-export const CATEGORIAS_VIDEO = [
-  "Pulido",
-  "Cerámico",
-  "Acrílico",
-  "Lavado",
-  "Interior",
-  "Motor y Chasis",
-  "Detailing",
-] as const;
 
 /** Códigos válidos de Instagram y TikTok: nada de barras, puntos ni dos puntos. */
 const CODIGO_IG = /^[A-Za-z0-9_-]{5,30}$/;
