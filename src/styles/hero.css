@@ -233,10 +233,12 @@
 
 /* ── Content layout ── */
 
+/* Sin `width` propio: el ancho lo da `.container` (el mismo que el resto del sitio).
+   Con `width: 100%` acá, en el celular y la tablet el texto quedaba pegado al borde,
+   y en pantallas de más de 1536 px no se alineaba con las otras secciones. */
 .hero__content {
   position: relative;
   z-index: 2;
-  width: 100%;
 
   display: flex;
   align-items: flex-end;
