@@ -86,7 +86,15 @@ export function Footer() {
           &copy; {new Date().getFullYear()} 369 Detail. Todos los derechos reservados.
         </p>
         <p className="footer__developer">
-          Designed with Precision
+          Web por{" "}
+          <a
+            href="https://www.instagram.com/andmar.studio"
+            target="_blank"
+            rel="noopener"
+            className="footer__developer-link"
+          >
+            andmar.studio
+          </a>
         </p>
       </div>
     </footer>
