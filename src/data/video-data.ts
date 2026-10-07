@@ -105,3 +105,16 @@ export const VIDEO_SLOTS: VideoSlot[] = [
   //   tiktokUrl: "https://www.tiktok.com/@369detail/video/REEMPLAZAR",
   // },
 ];
+
+/** Categorías sugeridas para los reels (texto libre igual).
+ *  Vive acá y no en lib/videos.ts a propósito: la usa un componente
+ *  "use client", y lib/videos.ts importa el cliente service_role. */
+export const CATEGORIAS_VIDEO = [
+  "Pulido",
+  "Cerámico",
+  "Acrílico",
+  "Lavado",
+  "Interior",
+  "Motor y Chasis",
+  "Detailing",
+] as const;

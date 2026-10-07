@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FotoInput } from "./foto-input";
-import { CATEGORIAS_VIDEO, type VideoRow } from "@/lib/videos";
+import { CATEGORIAS_VIDEO } from "@/data/video-data";
+import type { VideoRow } from "@/lib/videos";
 
 function Preview({ file }: { file: File | null }) {
   const url = useMemo(() => (file ? URL.createObjectURL(file) : null), [file]);
